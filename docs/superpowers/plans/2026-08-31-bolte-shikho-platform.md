@@ -3604,7 +3604,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'invalid language code' }, { status: 400 })
   }
 
-  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`
+  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${encodeURIComponent(`${from}|${to}`)}`
   const upstream = await fetch(url)
   if (!upstream.ok) {
     return NextResponse.json({ error: 'translation service error' }, { status: 502 })
