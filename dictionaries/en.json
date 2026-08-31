@@ -1,0 +1,126 @@
+{
+  "nav": {
+    "vocab": "Vocab",
+    "grammar": "Grammar & Tense",
+    "practice": "Practice",
+    "plan": "30-Day Plan",
+    "translate": "Translate"
+  },
+  "header": {
+    "brand": "Bolte Shikho",
+    "login": "Login",
+    "logout": "Logout",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "toggleTheme": "Toggle theme"
+  },
+  "home": {
+    "heading": "From Bangla to English — learn to speak, starting now.",
+    "sub": "Vocabulary, grammar, pronunciation practice, and a 30-day plan — all in one place.",
+    "cta": "Start Today",
+    "features": {
+      "vocab": { "title": "Vocab", "body": "250+ daily-use words, with audio pronunciation, quiz mode." },
+      "grammar": { "title": "Grammar & Tense", "body": "English grammar in 15 steps — from tenses to comparatives." },
+      "practice": { "title": "Practice", "body": "Check pronunciation with your mic, conversation dialogues, a daily topic." },
+      "plan": { "title": "30-Day Plan", "body": "Daily targets, a scoring system, on-time/late calendar tracking." },
+      "translate": { "title": "Translator", "body": "English ↔ Bangla, speak into the mic, listen back." }
+    }
+  },
+  "vocab": {
+    "heading": "Vocab",
+    "description": "Daily-use English words, with pronunciation and meaning.",
+    "searchPlaceholder": "Search a word... (English, pronunciation, or meaning)",
+    "all": "All",
+    "normalSpeed": "Normal speed",
+    "slowSpeed": "Slow speed",
+    "quizMode": "Quiz mode",
+    "listen": "Listen",
+    "tapToReveal": "Tap to reveal",
+    "wordCountAll": "{{total}} words",
+    "wordCountFiltered": "{{shown}} / {{total}} words"
+  },
+  "grammar": {
+    "heading": "Grammar & Tense",
+    "description": "From tenses to comparatives, step by step.",
+    "listen": "Listen"
+  },
+  "practice": {
+    "heading": "Practice",
+    "streak": {
+      "label": "Practice Streak",
+      "days": "{{n}} days",
+      "encourageActive": "No way around it — talk every day.",
+      "encourageStart": "Start today — once a day.",
+      "doneButton": "Practice done for today",
+      "actionButton": "I Practiced Today",
+      "guestNotice": "Login to save your streak."
+    },
+    "prompt": { "label": "Today's Topic", "next": "New Topic" },
+    "pronunciation": {
+      "label": "Say this",
+      "listen": "Listen",
+      "micButton": "Speak",
+      "listening": "Listening...",
+      "nextWord": "New Word",
+      "unsupported": "Mic check won't work in this browser. Works best on Chrome (Android/Desktop).",
+      "correct": "That's right! You said: \"{{heard}}\"",
+      "incorrect": "You said: \"{{heard}}\""
+    },
+    "dialogue": { "listen": "Listen" }
+  },
+  "plan": {
+    "headingGuest": "30-Day Plan",
+    "loginPrompt": "Login to view/start the plan.",
+    "headingScore": "30-Day Plan & Score",
+    "day": "Day {{day}}",
+    "startLabel": "Get Started",
+    "startBody": "Clicking this button starts Day 1 from today's date ({{today}}).",
+    "startButton": "Start the Plan from Today",
+    "score": "Score",
+    "dayOfTotal": "Day / Total",
+    "onTime": "Done on time"
+  },
+  "translate": {
+    "heading": "Translator",
+    "description": "English ↔ Bangla — type, or speak into the mic.",
+    "langEn": "English",
+    "langBn": "বাংলা",
+    "placeholder": "Type...",
+    "swap": "Swap languages",
+    "speakToFill": "Speak to fill the text",
+    "translating": "Translating...",
+    "translateButton": "Translate",
+    "listen": "Listen",
+    "genericError": "Translation failed",
+    "error": "Couldn't translate. Try again."
+  },
+  "login": {
+    "heading": "Login",
+    "email": "Email",
+    "password": "Password",
+    "button": "Login",
+    "noAccount": "No account? ",
+    "signupLink": "Sign up"
+  },
+  "signup": {
+    "heading": "Create Account",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "button": "Create Account",
+    "haveAccount": "Already have an account? ",
+    "loginLink": "Login"
+  },
+  "checkEmail": {
+    "heading": "Check Your Email",
+    "body": "We sent a confirmation link. Click it to activate your account — then login.",
+    "done": "Already clicked the link? ",
+    "loginLink": "Login"
+  },
+  "validation": {
+    "emailRequired": "Enter an email.",
+    "emailInvalid": "Enter a valid email.",
+    "passwordTooShort": "Password must be at least 6 characters.",
+    "nameRequired": "Enter a name."
+  }
+}
