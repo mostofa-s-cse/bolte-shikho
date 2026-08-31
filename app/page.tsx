@@ -4,11 +4,23 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 
 const FEATURES = [
-  { title: 'Shobdo', body: '250+ daily-use word, audio uccharon shoho, quiz mode.' },
-  { title: 'Bakko o Tense', body: '15 step-e English grammar — tense theke comparative porjonto.' },
-  { title: 'Practice', body: 'Mic diye uccharon check, conversation dialogue, daily prompt.' },
-  { title: '30 Din Plan', body: 'Roj-er target, score system, on-time/late calendar tracking.' },
-  { title: 'Translator', body: 'English ↔ Bangla, mic diye bolo, shune nao.' },
+  { title: 'Shobdo', href: '/vocab', body: '250+ daily-use word, audio uccharon shoho, quiz mode.' },
+  {
+    title: 'Bakko o Tense',
+    href: '/grammar',
+    body: '15 step-e English grammar — tense theke comparative porjonto.',
+  },
+  {
+    title: 'Practice',
+    href: '/practice',
+    body: 'Mic diye uccharon check, conversation dialogue, daily prompt.',
+  },
+  {
+    title: '30 Din Plan',
+    href: '/plan',
+    body: 'Roj-er target, score system, on-time/late calendar tracking.',
+  },
+  { title: 'Translator', href: '/translate', body: 'English ↔ Bangla, mic diye bolo, shune nao.' },
 ]
 
 export default function LandingPage() {
@@ -35,10 +47,12 @@ export default function LandingPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: i * 0.05 }}
           >
-            <Card>
-              <h2 className="font-display text-lg font-semibold">{feature.title}</h2>
-              <p className="mt-2 text-sm text-ink-muted">{feature.body}</p>
-            </Card>
+            <Link href={feature.href} className="block h-full">
+              <Card className="h-full transition-colors hover:border-accent">
+                <h2 className="font-display text-lg font-semibold">{feature.title}</h2>
+                <p className="mt-2 text-sm text-ink-muted">{feature.body}</p>
+              </Card>
+            </Link>
           </motion.div>
         ))}
       </section>

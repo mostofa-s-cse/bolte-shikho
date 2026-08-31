@@ -3,14 +3,8 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { signOut } from '@/app/auth/actions'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
-
-const NAV_LINKS = [
-  { href: '/vocab', label: 'Shobdo' },
-  { href: '/grammar', label: 'Bakko o Tense' },
-  { href: '/practice', label: 'Practice' },
-  { href: '/plan', label: '30 Din Plan' },
-  { href: '/translate', label: 'Translate' },
-]
+import { MobileNav } from '@/components/mobile-nav'
+import { NAV_LINKS } from '@/lib/nav'
 
 export async function SiteHeader() {
   const supabase = await createServerSupabaseClient()
@@ -46,6 +40,7 @@ export async function SiteHeader() {
               </Button>
             </Link>
           )}
+          <MobileNav />
         </div>
       </div>
     </header>
