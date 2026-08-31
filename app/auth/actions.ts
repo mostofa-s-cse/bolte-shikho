@@ -12,8 +12,13 @@ export async function signUp(formData: FormData) {
   if (error) redirect(`/signup?error=${encodeURIComponent(error)}`)
 
   const supabase = await createServerSupabaseClient()
-  const { error: signUpError } = await supabase.auth.signUp({ email, password })
+  const { data, error: signUpError } = await supabase.auth.signUp({ email, password })
   if (signUpError) redirect(`/signup?error=${encodeURIComponent(signUpError.message)}`)
+
+  // With "Confirm email" enabled (the default on a new Supabase project)
+  // signUp returns no session, so sending the user to /plan would just bounce
+  // them back to /login through the middleware with no explanation.
+  if (!data.session) redirect('/signup/check-email')
 
   redirect('/plan')
 }
