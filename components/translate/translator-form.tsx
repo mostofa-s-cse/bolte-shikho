@@ -31,7 +31,7 @@ export function TranslatorForm() {
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Translation failed')
       setResult(data.translatedText)
-    } catch (e) {
+    } catch {
       setError('Translate korte parlam na. Abar try koro.')
     } finally {
       setLoading(false)

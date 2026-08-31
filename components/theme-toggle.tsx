@@ -1,16 +1,31 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 import { useTheme } from 'next-themes'
 import { Moon, Sun } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
+const noopSubscribe = () => () => {}
+
+// next-themes seeds its state from localStorage on the client's very first
+// render, so `resolvedTheme` can disagree with the server-rendered HTML. The
+// icon therefore has to stay theme-neutral until hydration finishes.
+// useSyncExternalStore gives us that flag without a setState-in-effect:
+// React uses getServerSnapshot (false) for SSR and the hydration render, then
+// getSnapshot (true) once hydrated.
+function useHydrated(): boolean {
+  return useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false
+  )
+}
+
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => setMounted(true), [])
+  const hydrated = useHydrated()
 
-  const isDark = mounted && resolvedTheme === 'dark'
+  const isDark = hydrated && resolvedTheme === 'dark'
 
   return (
     <Button

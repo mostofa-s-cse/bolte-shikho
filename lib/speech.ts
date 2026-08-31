@@ -23,11 +23,6 @@ export function speak(text: string, rate = 1): void {
   window.speechSynthesis.speak(utterance)
 }
 
-export function isSpeechRecognitionSupported(): boolean {
-  if (typeof window === 'undefined') return false
-  return !!(window as any).SpeechRecognition || !!(window as any).webkitSpeechRecognition
-}
-
 // The Web Speech API's SpeechRecognition interface isn't part of
 // TypeScript's standard DOM lib (it never shipped as a finished web
 // standard), so `next build`'s type-check has no built-in type for it.
@@ -46,11 +41,29 @@ export interface SpeechRecognitionLike {
   start(): void
 }
 
+// Neither constructor is declared on `Window` in TypeScript's DOM lib, so
+// this is the minimal ambient shape needed to reach them without `any`.
+export interface WindowWithSpeechRecognition {
+  SpeechRecognition?: new () => SpeechRecognitionLike
+  webkitSpeechRecognition?: new () => SpeechRecognitionLike
+}
+
+function speechRecognitionWindow(): WindowWithSpeechRecognition {
+  return window as unknown as WindowWithSpeechRecognition
+}
+
+export function isSpeechRecognitionSupported(): boolean {
+  if (typeof window === 'undefined') return false
+  const w = speechRecognitionWindow()
+  return !!w.SpeechRecognition || !!w.webkitSpeechRecognition
+}
+
 export function createRecognition(): SpeechRecognitionLike | null {
   if (typeof window === 'undefined') return null
-  const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+  const w = speechRecognitionWindow()
+  const SR = w.SpeechRecognition || w.webkitSpeechRecognition
   if (!SR) return null
-  const recognition = new SR() as SpeechRecognitionLike
+  const recognition = new SR()
   recognition.lang = 'en-US'
   recognition.interimResults = false
   recognition.maxAlternatives = 1

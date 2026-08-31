@@ -1,5 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import type { Mock } from 'vitest'
 import { speak, normalizeSpeech, isSpeechRecognitionSupported } from './speech'
+
+interface StubUtterance {
+  text: string
+  lang: string
+  rate: number
+}
+
+// The stub installed in beforeEach; typed here so the assertions can read
+// back the utterance it constructed without an `any` cast.
+function lastUtterance(): StubUtterance {
+  const constructor = window.SpeechSynthesisUtterance as unknown as Mock<
+    (text: string) => void
+  >
+  return constructor.mock.results[0].value as StubUtterance
+}
 
 describe('normalizeSpeech', () => {
   it('lowercases, strips punctuation, and collapses whitespace', () => {
@@ -27,8 +43,7 @@ describe('speak', () => {
   it('strips parenthetical asides and speaker labels before speaking', () => {
     speak('A: I go to school (Present tense).', 1)
     expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1)
-    const utterance = (window.SpeechSynthesisUtterance as any).mock.results[0].value
-    expect(utterance.text).toBe('I go to school.')
+    expect(lastUtterance().text).toBe('I go to school.')
   })
 
   it('does nothing when speechSynthesis is unavailable', () => {

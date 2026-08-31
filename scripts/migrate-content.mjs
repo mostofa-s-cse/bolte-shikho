@@ -16,7 +16,9 @@ function extractArray(varName) {
   const re = new RegExp(`const ${varName} = (\\[[\\s\\S]*?\\n  \\]);`)
   const match = script.match(re)
   if (!match) throw new Error(`Could not find "const ${varName} = [...]" in ${SOURCE}`)
-  // eslint-disable-next-line no-new-func -- trusted local file, run once at migration time
+  // `new Function` is deliberate: the source is a trusted local file and this
+  // script runs once, by hand, at migration time. (No eslint-disable needed —
+  // `no-new-func` is not enabled by eslint-config-next.)
   return new Function(`return ${match[1]}`)()
 }
 
