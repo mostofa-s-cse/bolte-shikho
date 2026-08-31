@@ -1826,7 +1826,7 @@ create policy "Users manage their own practice log"
 - [ ] **Step 2: Run it against your Supabase project**
 
 In the Supabase dashboard → SQL Editor, paste the contents of `supabase/schema.sql` and run it.
-Expected: "Success. No rows returned" and all five tables visible under Table Editor.
+Expected: "Success. No rows returned" and all four tables visible under Table Editor.
 
 - [ ] **Step 3: Manually verify RLS**
 
