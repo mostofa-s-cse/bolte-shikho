@@ -6,20 +6,16 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { VOCAB } from '@/data/vocab'
 import { speak, normalizeSpeech, isSpeechRecognitionSupported, createRecognition } from '@/lib/speech'
+import { useTranslations } from '@/lib/i18n/locale-context'
 
 const ALL_WORDS = VOCAB.flatMap((category) => category.words.map((w) => w.en))
 
 export function PronunciationCheck() {
+  const { t, format } = useTranslations()
   // Starts false to match SSR (no `window` on the server), then flips after
-  // mount once the browser's real capability is known — computing this in
-  // useMemo instead mismatched immediately, since the client's first render
-  // already has `window` while the server's didn't.
+  // mount once the browser's real capability is known.
   const [supported, setSupported] = useState(false)
   useEffect(() => setSupported(isSpeechRecognitionSupported()), [])
-  // Starts deterministically at the first word: Math.random() in the
-  // initializer produced a different value on the server than at hydration,
-  // which mismatched and made the visible word swap right after load.
-  // "Notun Word" is how you get a different one.
   const [target, setTarget] = useState(ALL_WORDS[0])
   const [result, setResult] = useState<{ ok: boolean; heard: string } | null>(null)
   const [listening, setListening] = useState(false)
@@ -49,23 +45,23 @@ export function PronunciationCheck() {
 
   return (
     <Card>
-      <span className="text-xs font-semibold uppercase tracking-wide text-ink-muted">Bolar jonno</span>
+      <span className="text-xs font-semibold uppercase tracking-wide text-ink-muted">
+        {t.practice.pronunciation.label}
+      </span>
       <p className="mt-2 font-bengali text-lg">{target}</p>
       <div className="mt-4 flex flex-wrap gap-3">
         <Button variant="ghost" onClick={() => speak(target)}>
-          <Volume2 size={16} /> Shuno
+          <Volume2 size={16} /> {t.practice.pronunciation.listen}
         </Button>
         <Button onClick={startListening} disabled={!supported || listening}>
-          <Mic size={16} /> {listening ? 'Shunchi...' : 'Bolo'}
+          <Mic size={16} /> {listening ? t.practice.pronunciation.listening : t.practice.pronunciation.micButton}
         </Button>
         <Button variant="ghost" onClick={nextTarget}>
-          Notun Word
+          {t.practice.pronunciation.nextWord}
         </Button>
       </div>
       {!supported && (
-        <p className="mt-3 font-bengali text-sm text-ink-muted">
-          Ei browser-e mic check kaj korbe na. Chrome (Android/Desktop) e best kaj kore.
-        </p>
+        <p className="mt-3 font-bengali text-sm text-ink-muted">{t.practice.pronunciation.unsupported}</p>
       )}
       {result && (
         <div
@@ -74,7 +70,9 @@ export function PronunciationCheck() {
           }`}
         >
           {result.ok ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
-          {result.ok ? `Thik ache! Tumi bolecho: "${result.heard}"` : `Tumi bolecho: "${result.heard}"`}
+          {format(result.ok ? t.practice.pronunciation.correct : t.practice.pronunciation.incorrect, {
+            heard: result.heard,
+          })}
         </div>
       )}
     </Card>

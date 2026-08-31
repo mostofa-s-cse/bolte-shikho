@@ -3,8 +3,10 @@
 import { Volume2 } from 'lucide-react'
 import type { Dialogue } from '@/data/dialogues'
 import { speak } from '@/lib/speech'
+import { useTranslations } from '@/lib/i18n/locale-context'
 
 export function DialogueList({ dialogues }: { dialogues: Dialogue[] }) {
+  const { t } = useTranslations()
   return (
     <div className="flex flex-col gap-8">
       {dialogues.map((dialogue) => (
@@ -17,7 +19,7 @@ export function DialogueList({ dialogues }: { dialogues: Dialogue[] }) {
                   {line.speaker && <span className="text-accent">{line.speaker}:</span>} {line.en}
                   <button
                     type="button"
-                    aria-label="Listen"
+                    aria-label={t.practice.dialogue.listen}
                     onClick={() => speak(line.en)}
                     className="cursor-pointer rounded-md p-1 text-accent hover:bg-surface-alt"
                   >

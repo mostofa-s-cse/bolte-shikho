@@ -6,12 +6,14 @@ import { PromptCard } from '@/components/practice/prompt-card'
 import { PronunciationCheck } from '@/components/practice/pronunciation-check'
 import { DialogueList } from '@/components/practice/dialogue-list'
 import { PracticeStreak } from '@/components/practice/practice-streak'
+import { getDictionary } from '@/lib/i18n/get-dictionary'
 
 export default async function PracticePage() {
   const supabase = await createServerSupabaseClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
+  const t = await getDictionary()
 
   const today = todayISO()
   let logDates: string[] = []
@@ -28,7 +30,7 @@ export default async function PracticePage() {
 
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-10 px-6 py-10">
-      <h1 className="font-display text-2xl font-semibold">Practice</h1>
+      <h1 className="font-display text-2xl font-semibold">{t.practice.heading}</h1>
       <PracticeStreak
         initialStreak={computePracticeStreak(logDates, today)}
         initialDoneToday={logDates.includes(today)}

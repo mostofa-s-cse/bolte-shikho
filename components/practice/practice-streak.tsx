@@ -5,6 +5,7 @@ import { CheckCircle2, Flame } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { logPracticeToday } from '@/app/[lang]/practice/actions'
+import { useTranslations } from '@/lib/i18n/locale-context'
 
 export function PracticeStreak({
   initialStreak,
@@ -13,11 +14,10 @@ export function PracticeStreak({
   initialStreak: number
   initialDoneToday: boolean
 }) {
+  const { t, format } = useTranslations()
   const [status, setStatus] = useState<'idle' | 'done' | 'guest'>(
     initialDoneToday ? 'done' : 'idle'
   )
-  // Logging today extends the streak by one; the server-rendered value takes
-  // over again on the next load (logPracticeToday revalidates /practice).
   const [streak, setStreak] = useState(initialStreak)
 
   async function handleClick() {
@@ -32,20 +32,22 @@ export function PracticeStreak({
 
   return (
     <Card>
-      <span className="text-xs font-semibold uppercase tracking-wide text-ink-muted">Practice Streak</span>
+      <span className="text-xs font-semibold uppercase tracking-wide text-ink-muted">
+        {t.practice.streak.label}
+      </span>
       <p className="mt-2 flex items-center gap-2 font-display text-2xl font-semibold">
         <Flame size={20} className={streak > 0 ? 'text-accent' : 'text-ink-muted'} />
-        {streak} din
+        {format(t.practice.streak.days, { n: streak })}
       </p>
       <p className="mt-1 font-bengali text-sm text-ink-muted">
-        {streak > 0 ? 'Roj kotha bola chara upay nai.' : 'Aj theke shuru koro — roj ekbar.'}
+        {streak > 0 ? t.practice.streak.encourageActive : t.practice.streak.encourageStart}
       </p>
       <Button className="mt-4" onClick={handleClick} disabled={status === 'done'}>
         {status === 'done' && <CheckCircle2 size={16} />}
-        {status === 'done' ? 'Ajke practice hoye geche' : 'Ajke Practice Korlam'}
+        {status === 'done' ? t.practice.streak.doneButton : t.practice.streak.actionButton}
       </Button>
       {status === 'guest' && (
-        <p className="mt-2 font-bengali text-sm text-bad">Streak save korte hole login koro.</p>
+        <p className="mt-2 font-bengali text-sm text-bad">{t.practice.streak.guestNotice}</p>
       )}
     </Card>
   )
