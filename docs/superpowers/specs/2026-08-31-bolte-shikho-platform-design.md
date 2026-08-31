@@ -72,13 +72,6 @@ it doesn't vary per user and doesn't need a database round-trip.
 Only user-specific state is persisted:
 
 ```sql
--- one row per authenticated user, created on first sign-in
-profiles (
-  id            uuid primary key references auth.users(id),
-  display_name  text,
-  created_at    timestamptz default now()
-)
-
 -- one row per (user, plan_day, task_index)
 plan_task_progress (
   id            bigint generated always as identity primary key,
@@ -114,7 +107,11 @@ practice_log (
 ```
 
 Row Level Security: every table restricts reads/writes to
-`auth.uid() = user_id` (or `= id` for `profiles`).
+`auth.uid() = user_id`.
+
+No `profiles` table: no page or feature in this v1 displays or edits a
+per-user profile field (name, avatar, etc.), so a profiles table would be
+unused schema. Add one later if a feature actually needs it.
 
 Score and streak numbers are *derived* from these tables at read time
 (same logic as the prototype: 10 pts/task, +20 for a fully completed day,

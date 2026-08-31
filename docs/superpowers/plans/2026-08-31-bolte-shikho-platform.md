@@ -1750,34 +1750,13 @@ git commit -m "feat: Supabase browser/server clients and session middleware"
 - Create: `supabase/schema.sql`
 
 **Interfaces:**
-- Produces: the `profiles`, `plan_start`, `plan_task_progress`, `plan_day_completion`, `practice_log` tables with RLS, used by Tasks 15 and 16's Server Actions.
+- Produces: the `plan_start`, `plan_task_progress`, `plan_day_completion`, `practice_log` tables with RLS, used by Tasks 15 and 16's Server Actions. (No `profiles` table — nothing in this plan reads or writes a display name or any other per-user profile field, so it would be dead schema; add it later if a feature actually needs it.)
 
 - [ ] **Step 1: Write the schema**
 
 Create `supabase/schema.sql`:
 
 ```sql
--- Profiles: one row per authenticated user
-create table if not exists profiles (
-  id uuid primary key references auth.users(id) on delete cascade,
-  display_name text,
-  created_at timestamptz not null default now()
-);
-
-alter table profiles enable row level security;
-
-create policy "Users can view their own profile"
-  on profiles for select
-  using (auth.uid() = id);
-
-create policy "Users can insert their own profile"
-  on profiles for insert
-  with check (auth.uid() = id);
-
-create policy "Users can update their own profile"
-  on profiles for update
-  using (auth.uid() = id);
-
 -- Plan start: one row per user, set when they click "Start" on /plan
 create table if not exists plan_start (
   user_id uuid primary key references auth.users(id) on delete cascade,
@@ -3222,12 +3201,15 @@ export async function toggleTask(planDay: number, taskIndex: number, completed: 
   } = await supabase.auth.getUser()
   if (!user) return
 
-  await supabase.from('plan_task_progress').upsert({
-    user_id: user.id,
-    plan_day: planDay,
-    task_index: taskIndex,
-    completed_at: completed ? new Date().toISOString() : null,
-  })
+  await supabase.from('plan_task_progress').upsert(
+    {
+      user_id: user.id,
+      plan_day: planDay,
+      task_index: taskIndex,
+      completed_at: completed ? new Date().toISOString() : null,
+    },
+    { onConflict: 'user_id,plan_day,task_index' }
+  )
 
   const { count } = await supabase
     .from('plan_task_progress')
