@@ -1440,9 +1440,38 @@ export function ThemeToggle() {
 }
 ```
 
-- [ ] **Step 5: Update `components/theme-toggle.test.tsx`** (check current content first — if it renders `<ThemeToggle />` directly, wrap with `renderWithLocale`)
+- [ ] **Step 5: Update `components/theme-toggle.test.tsx`**
 
-Read the existing test; if it calls `render(<ThemeToggle />)`, change that one line to `renderWithLocale(<ThemeToggle />)` and add the import `import { renderWithLocale } from '@/test/render-with-locale'`. Leave every other assertion as-is — `aria-label` text is not asserted there today (confirmed by reading the file at plan-writing time), so no assertion text needs to change.
+The existing test queries the button by `name: /theme/i` — that regex matches the current hardcoded English `aria-label="Toggle theme"`, but the bn dictionary's `header.toggleTheme` is real Bangla script ("থিম পরিবর্তন করো"), which the regex won't match. Wrap with `LocaleProvider` and match on the actual bn dictionary value instead of an English-only regex:
+
+```tsx
+// components/theme-toggle.test.tsx
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { describe, it, expect } from 'vitest'
+import { ThemeProvider } from '@/components/theme-provider'
+import { LocaleProvider } from '@/lib/i18n/locale-context'
+import { DICTIONARIES } from '@/lib/i18n/dictionary'
+import { ThemeToggle } from './theme-toggle'
+
+describe('ThemeToggle', () => {
+  it('toggles the aria-pressed state when clicked', async () => {
+    render(
+      <LocaleProvider dict={DICTIONARIES.bn} locale="bn">
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          <ThemeToggle />
+        </ThemeProvider>
+      </LocaleProvider>
+    )
+    const button = await screen.findByRole('button', { name: DICTIONARIES.bn.header.toggleTheme })
+    const before = button.getAttribute('aria-pressed')
+    await userEvent.click(button)
+    expect(button.getAttribute('aria-pressed')).not.toBe(before)
+  })
+})
+```
+
+(This test predates `render-with-locale.tsx` and needs `ThemeProvider` nested too, which the generic helper doesn't provide — write `LocaleProvider` directly here rather than using `renderWithLocale`.)
 
 - [ ] **Step 6: Create `components/locale-toggle.tsx`**
 
