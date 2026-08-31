@@ -808,14 +808,17 @@ Expected: FAIL — `./scoring` module not found.
 
 ```ts
 export function dateFromStartOffset(startDate: string, offsetDays: number): string {
-  const d = new Date(`${startDate}T00:00:00`)
-  d.setDate(d.getDate() + offsetDays)
+  // Use explicit UTC construction/mutation throughout — parsing a
+  // date-only string as local time (no `Z`) would shift the resulting
+  // calendar date whenever the server's timezone isn't UTC.
+  const d = new Date(`${startDate}T00:00:00Z`)
+  d.setUTCDate(d.getUTCDate() + offsetDays)
   return d.toISOString().slice(0, 10)
 }
 
 export function getCurrentPlanDay(startDate: string, totalDays: number, today: string): number {
-  const start = new Date(`${startDate}T00:00:00`)
-  const now = new Date(`${today}T00:00:00`)
+  const start = new Date(`${startDate}T00:00:00Z`)
+  const now = new Date(`${today}T00:00:00Z`)
   const diff = Math.floor((now.getTime() - start.getTime()) / 86_400_000) + 1
   return Math.min(Math.max(diff, 1), totalDays)
 }
@@ -3169,6 +3172,7 @@ Create `app/plan/actions.ts`:
 
 import { revalidatePath } from 'next/cache'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { dateFromStartOffset } from '@/lib/scoring'
 
 export async function startPlan() {
   const supabase = await createServerSupabaseClient()
@@ -3214,9 +3218,7 @@ export async function toggleTask(planDay: number, taskIndex: number, completed: 
       .single()
 
     if (startRow) {
-      const scheduled = new Date(`${startRow.start_date}T00:00:00`)
-      scheduled.setDate(scheduled.getDate() + (planDay - 1))
-      const scheduledDate = scheduled.toISOString().slice(0, 10)
+      const scheduledDate = dateFromStartOffset(startRow.start_date, planDay - 1)
       const today = new Date().toISOString().slice(0, 10)
 
       await supabase
