@@ -602,7 +602,13 @@ describe('speak', () => {
     vi.stubGlobal('speechSynthesis', { cancel: vi.fn(), speak: vi.fn() })
     vi.stubGlobal(
       'SpeechSynthesisUtterance',
-      vi.fn().mockImplementation((text: string) => ({ text, lang: '', rate: 1 }))
+      // Must be a real `function`, not an arrow function — arrow functions
+      // are never constructible, and `speak()` calls this with `new`.
+      vi.fn(function (this: { text: string; lang: string; rate: number }, text: string) {
+        this.text = text
+        this.lang = ''
+        this.rate = 1
+      })
     )
   })
 
@@ -2852,6 +2858,7 @@ Create `components/practice/pronunciation-check.tsx`:
 'use client'
 
 import { useMemo, useState } from 'react'
+import { Volume2, Mic, CheckCircle2, XCircle } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { VOCAB } from '@/data/vocab'
@@ -2889,10 +2896,10 @@ export function PronunciationCheck() {
       <p className="mt-2 font-bengali text-lg">{target}</p>
       <div className="mt-4 flex flex-wrap gap-3">
         <Button variant="ghost" onClick={() => speak(target)}>
-          🔊 Shuno
+          <Volume2 size={16} /> Shuno
         </Button>
         <Button onClick={startListening} disabled={!supported || listening}>
-          {listening ? '🎤 Shunchi...' : '🎤 Bolo'}
+          <Mic size={16} /> {listening ? 'Shunchi...' : 'Bolo'}
         </Button>
         <Button variant="ghost" onClick={nextTarget}>
           Notun Word
@@ -2905,11 +2912,12 @@ export function PronunciationCheck() {
       )}
       {result && (
         <div
-          className={`mt-4 rounded-lg border p-3 text-sm ${
+          className={`mt-4 flex items-center gap-2 rounded-lg border p-3 text-sm ${
             result.ok ? 'border-good text-good' : 'border-bad text-bad'
           }`}
         >
-          {result.ok ? `✅ Thik ache! Tumi bolecho: "${result.heard}"` : `❌ Tumi bolecho: "${result.heard}"`}
+          {result.ok ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
+          {result.ok ? `Thik ache! Tumi bolecho: "${result.heard}"` : `Tumi bolecho: "${result.heard}"`}
         </div>
       )}
     </Card>
@@ -2947,6 +2955,7 @@ Create `components/practice/practice-streak.tsx`:
 'use client'
 
 import { useState } from 'react'
+import { CheckCircle2 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { logPracticeToday } from '@/app/practice/actions'
@@ -2964,7 +2973,8 @@ export function PracticeStreak() {
       <span className="text-xs font-semibold uppercase tracking-wide text-ink-muted">Practice Streak</span>
       <p className="mt-2 font-bengali text-sm text-ink-muted">Roj kotha bola chara upay nai.</p>
       <Button className="mt-4" onClick={handleClick} disabled={status === 'done'}>
-        {status === 'done' ? '✅ Ajke practice hoye geche' : 'Ajke Practice Korlam'}
+        {status === 'done' && <CheckCircle2 size={16} />}
+        {status === 'done' ? 'Ajke practice hoye geche' : 'Ajke Practice Korlam'}
       </Button>
       {status === 'guest' && (
         <p className="mt-2 font-bengali text-sm text-bad">Streak save korte hole login koro.</p>

@@ -14,7 +14,13 @@ describe('speak', () => {
     vi.stubGlobal('speechSynthesis', { cancel: vi.fn(), speak: vi.fn() })
     vi.stubGlobal(
       'SpeechSynthesisUtterance',
-      vi.fn().mockImplementation((text: string) => ({ text, lang: '', rate: 1 }))
+      // Must be a real `function`, not an arrow function — arrow functions
+      // are never constructible, and `speak()` calls this with `new`.
+      vi.fn(function (this: { text: string; lang: string; rate: number }, text: string) {
+        this.text = text
+        this.lang = ''
+        this.rate = 1
+      })
     )
   })
 

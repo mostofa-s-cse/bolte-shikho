@@ -14,6 +14,8 @@ export function speak(text: string, rate = 1): void {
   const clean = text
     .replace(/\s*\(.*?\)\s*/g, ' ')
     .replace(/^[AB]:\s*/, '')
+    .replace(/\s+/g, ' ')
+    .replace(/\s+([.!?,;:])/g, '$1')
     .trim()
   const utterance = new SpeechSynthesisUtterance(clean)
   utterance.lang = 'en-US'
