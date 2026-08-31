@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
-import { dateFromStartOffset } from '@/lib/scoring'
+import { dateFromStartOffset, todayISO } from '@/lib/scoring'
 
 export async function startPlan() {
   const supabase = await createServerSupabaseClient()
@@ -11,8 +11,7 @@ export async function startPlan() {
   } = await supabase.auth.getUser()
   if (!user) return
 
-  const today = new Date().toISOString().slice(0, 10)
-  await supabase.from('plan_start').upsert({ user_id: user.id, start_date: today })
+  await supabase.from('plan_start').upsert({ user_id: user.id, start_date: todayISO() })
   revalidatePath('/plan')
 }
 
@@ -49,7 +48,7 @@ export async function toggleTask(planDay: number, taskIndex: number, completed: 
 
     if (startRow) {
       const scheduledDate = dateFromStartOffset(startRow.start_date, planDay - 1)
-      const today = new Date().toISOString().slice(0, 10)
+      const today = todayISO()
 
       await supabase
         .from('plan_day_completion')

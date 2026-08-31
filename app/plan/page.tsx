@@ -5,6 +5,7 @@ import {
   getCurrentPlanDay,
   computeDayStatus,
   computeScore,
+  todayISO,
 } from '@/lib/scoring'
 import { PlanStartCard } from '@/components/plan/plan-start-card'
 import { PlanClient } from '@/components/plan/plan-client'
@@ -15,7 +16,7 @@ export default async function PlanPage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const today = new Date().toISOString().slice(0, 10)
+  const today = todayISO()
 
   if (!user) {
     return (
