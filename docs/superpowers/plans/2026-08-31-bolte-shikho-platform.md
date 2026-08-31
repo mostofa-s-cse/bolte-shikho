@@ -663,6 +663,8 @@ export function speak(text: string, rate = 1): void {
   const clean = text
     .replace(/\s*\(.*?\)\s*/g, ' ')
     .replace(/^[AB]:\s*/, '')
+    .replace(/\s+/g, ' ')
+    .replace(/\s+([.!?,;:])/g, '$1')
     .trim()
   const utterance = new SpeechSynthesisUtterance(clean)
   utterance.lang = 'en-US'
@@ -887,7 +889,7 @@ git commit -m "feat: pure plan scoring and date logic"
 **Interfaces:**
 - Produces: `export interface VocabWord { en: string; pron: string; mean: string }`, `export interface VocabCategory { name: string; words: VocabWord[] }`, `export const VOCAB: VocabCategory[]` (30 categories, 307 words). Consumed by Task 13.
 
-The earlier prototype (an HTML file with its vocabulary as a plain JS array, kept for reference only — never imported or modified by this project) already contains this exact data. Rather than hand-retyping ~300 words, Step 3 below is a small one-time migration script that reads that array out of the prototype and writes it as `data/vocab.ts`. The script is run once now; after that, `data/vocab.ts` is a normal committed file and the script/prototype are never touched again by later tasks.
+The earlier prototype — a single HTML file with its vocabulary as a plain JS array — already contains this exact data. A copy of it lives at the project root, `english-vocab.html` (read-only reference only; never imported or modified by the app itself). Rather than hand-retyping ~300 words, Step 3 below is a small one-time migration script that reads that array out of the prototype file and writes it as `data/vocab.ts`. The script is run once now; after that, `data/vocab.ts` is a normal committed file and the script/prototype file are never touched again by later tasks. (The prototype copy may be deleted from the project root once migration is done — it's scaffolding, not app code.)
 
 - [ ] **Step 1: Write the failing test**
 
@@ -938,13 +940,14 @@ Create `scripts/migrate-content.mjs`:
 
 ```js
 #!/usr/bin/env node
-// One-time migration: reads the vocabulary array out of the earlier
-// prototype (read-only reference, never modified) and writes it as
-// data/vocab.ts. Run once; data/vocab.ts is committed normally after that.
+// One-time migration: reads the vocabulary array out of the prototype
+// reference copy at the project root (read-only, never modified) and
+// writes it as data/vocab.ts. Run once; data/vocab.ts is committed
+// normally after that.
 import fs from 'node:fs'
 import path from 'node:path'
 
-const SOURCE = process.argv[2] || '/home/iqbal/Project/hris/english-vocab.html'
+const SOURCE = process.argv[2] || path.resolve('english-vocab.html')
 const OUT_DIR = path.resolve('data')
 
 const html = fs.readFileSync(SOURCE, 'utf8')
@@ -2187,7 +2190,7 @@ const FEATURES = [
   { title: 'Bakko o Tense', body: '15 step-e English grammar — tense theke comparative porjonto.' },
   { title: 'Practice', body: 'Mic diye uccharon check, conversation dialogue, daily prompt.' },
   { title: '30 Din Plan', body: 'Roj-er target, score system, on-time/late calendar tracking.' },
-  { title: 'Translator', body: 'English ↔ Bangla, mic diye bolo, 🔊 diye shuno.' },
+  { title: 'Translator', body: 'English ↔ Bangla, mic diye bolo, shune nao.' },
 ]
 
 export default function LandingPage() {
@@ -3610,7 +3613,7 @@ Create `components/translate/translator-form.tsx`:
 'use client'
 
 import { useState } from 'react'
-import { ArrowLeftRight, Volume2 } from 'lucide-react'
+import { ArrowLeftRight, Volume2, Mic } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { speak, createRecognition } from '@/lib/speech'
@@ -3681,8 +3684,8 @@ export function TranslatorForm() {
       />
 
       <div className="mt-2 flex gap-2">
-        <Button variant="ghost" size="sm" onClick={startMic} type="button">
-          🎤
+        <Button variant="ghost" size="sm" onClick={startMic} type="button" aria-label="Speak to fill the text">
+          <Mic size={16} />
         </Button>
         <Button size="sm" onClick={translate} disabled={loading} type="button">
           {loading ? 'Translate hocche...' : 'Translate Koro'}
