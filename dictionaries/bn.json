@@ -122,6 +122,6 @@
     "emailInvalid": "সঠিক ইমেইল দাও।",
     "passwordTooShort": "পাসওয়ার্ড কমপক্ষে ৬ ক্যারেক্টার হতে হবে।",
     "nameRequired": "নাম দাও।",
-    "invalidConfirmLink": "Confirmation link ta thik nai."
+    "invalidConfirmLink": "এই কনফার্মেশন লিংকটা ঠিক নেই।"
   }
 }
