@@ -27,7 +27,7 @@ export default async function PracticePage() {
   }
 
   return (
-    <main className="mx-auto flex max-w-3xl flex-col gap-10 px-6 py-10">
+    <main className="mx-auto flex max-w-5xl flex-col gap-10 px-6 py-10">
       <h1 className="font-display text-2xl font-semibold">Practice</h1>
       <PracticeStreak
         initialStreak={computePracticeStreak(logDates, today)}

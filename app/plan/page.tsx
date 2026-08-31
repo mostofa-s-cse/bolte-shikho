@@ -20,7 +20,7 @@ export default async function PlanPage() {
 
   if (!user) {
     return (
-      <main className="mx-auto max-w-2xl px-6 py-10">
+      <main className="mx-auto max-w-5xl px-6 py-10">
         <h1 className="font-display text-2xl font-semibold">30 Din Plan</h1>
         <p className="mt-4 font-bengali text-ink-muted">Plan dekhte/shuru korte login koro.</p>
       </main>
@@ -35,7 +35,7 @@ export default async function PlanPage() {
 
   if (!startRow) {
     return (
-      <main className="mx-auto max-w-2xl px-6 py-10">
+      <main className="mx-auto max-w-5xl px-6 py-10">
         <h1 className="font-display text-2xl font-semibold">30 Din Plan</h1>
         <div className="mt-6">
           <PlanStartCard today={today} />
@@ -80,7 +80,7 @@ export default async function PlanPage() {
   )
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-10">
+    <main className="mx-auto max-w-5xl px-6 py-10">
       <h1 className="font-display text-2xl font-semibold">30 Din Plan o Score</h1>
       <PlanClient
         currentDay={currentDay}
