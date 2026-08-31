@@ -1,6 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
+import { useTranslations } from '@/lib/i18n/locale-context'
 
 export function CategoryChips({
   categories,
@@ -11,23 +12,26 @@ export function CategoryChips({
   active: string
   onChange: (category: string) => void
 }) {
+  const { t } = useTranslations()
   return (
     <div className="flex gap-2 overflow-x-auto pb-1">
-      {['All', ...categories].map((category) => (
-        <button
-          key={category}
-          type="button"
-          onClick={() => onChange(category)}
-          className={cn(
-            'flex-none cursor-pointer whitespace-nowrap rounded-full border px-3 py-1.5 text-sm font-medium',
-            active === category
-              ? 'border-accent bg-accent text-accent-ink'
-              : 'border-border bg-surface text-ink-muted'
-          )}
-        >
-          {category}
-        </button>
-      ))}
+      {[{ key: 'All', label: t.vocab.all }, ...categories.map((c) => ({ key: c, label: c }))].map(
+        (category) => (
+          <button
+            key={category.key}
+            type="button"
+            onClick={() => onChange(category.key)}
+            className={cn(
+              'flex-none cursor-pointer whitespace-nowrap rounded-full border px-3 py-1.5 text-sm font-medium',
+              active === category.key
+                ? 'border-accent bg-accent text-accent-ink'
+                : 'border-border bg-surface text-ink-muted'
+            )}
+          >
+            {category.label}
+          </button>
+        )
+      )}
     </div>
   )
 }

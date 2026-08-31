@@ -5,6 +5,7 @@ import { Volume2 } from 'lucide-react'
 import type { VocabWord } from '@/data/vocab'
 import { speak } from '@/lib/speech'
 import { cn } from '@/lib/utils'
+import { useTranslations } from '@/lib/i18n/locale-context'
 
 export function WordCard({
   word,
@@ -15,6 +16,7 @@ export function WordCard({
   quizMode: boolean
   rate: number
 }) {
+  const { t } = useTranslations()
   const [revealed, setRevealed] = useState(false)
   const showMeaning = !quizMode || revealed
 
@@ -26,7 +28,7 @@ export function WordCard({
       <span className="font-semibold">{word.en}</span>
       <button
         type="button"
-        aria-label="Listen"
+        aria-label={t.vocab.listen}
         onClick={(e) => {
           e.stopPropagation()
           speak(word.en, rate)
@@ -42,7 +44,7 @@ export function WordCard({
         </span>
       ) : (
         <span className={cn('col-span-2 font-bengali text-xs text-ink-muted opacity-70')}>
-          দেখতে ট্যাপ করো
+          {t.vocab.tapToReveal}
         </span>
       )}
     </div>

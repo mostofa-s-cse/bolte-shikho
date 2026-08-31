@@ -7,8 +7,10 @@ import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { CategoryChips } from './category-chips'
 import { WordCard } from './word-card'
+import { useTranslations } from '@/lib/i18n/locale-context'
 
 export function VocabBrowser() {
+  const { t, format } = useTranslations()
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
   const [quizMode, setQuizMode] = useState(false)
@@ -21,14 +23,16 @@ export function VocabBrowser() {
   return (
     <div className="flex flex-col gap-4">
       <Input
-        placeholder="Word khojo... (English, uccharon, ba ortho likhe)"
+        placeholder={t.vocab.searchPlaceholder}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
       <CategoryChips categories={VOCAB.map((c) => c.name)} active={category} onChange={setCategory} />
       <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-ink-muted">
         <span>
-          {query || category !== 'All' ? `${shownWords} / ${totalWords} word` : `${totalWords}ta word`}
+          {query || category !== 'All'
+            ? format(t.vocab.wordCountFiltered, { shown: shownWords, total: totalWords })
+            : format(t.vocab.wordCountAll, { total: totalWords })}
         </span>
         <div className="flex gap-2">
           <button
@@ -36,18 +40,18 @@ export function VocabBrowser() {
             onClick={() => setRate(1)}
             className={`cursor-pointer ${rate === 1 ? 'font-semibold text-accent' : ''}`}
           >
-            Normal speed
+            {t.vocab.normalSpeed}
           </button>
           <button
             type="button"
             onClick={() => setRate(0.7)}
             className={`cursor-pointer ${rate === 0.7 ? 'font-semibold text-accent' : ''}`}
           >
-            Slow speed
+            {t.vocab.slowSpeed}
           </button>
         </div>
         <label className="flex items-center gap-2">
-          Quiz mode
+          {t.vocab.quizMode}
           <Checkbox checked={quizMode} onChange={(e) => setQuizMode(e.target.checked)} />
         </label>
       </div>
