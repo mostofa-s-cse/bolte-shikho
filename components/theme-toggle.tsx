@@ -4,6 +4,7 @@ import { useSyncExternalStore } from 'react'
 import { useTheme } from 'next-themes'
 import { Moon, Sun } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useTranslations } from '@/lib/i18n/locale-context'
 
 const noopSubscribe = () => () => {}
 
@@ -24,6 +25,7 @@ function useHydrated(): boolean {
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme()
   const hydrated = useHydrated()
+  const { t } = useTranslations()
 
   const isDark = hydrated && resolvedTheme === 'dark'
 
@@ -32,7 +34,7 @@ export function ThemeToggle() {
       type="button"
       variant="ghost"
       size="sm"
-      aria-label="Toggle theme"
+      aria-label={t.header.toggleTheme}
       aria-pressed={isDark}
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
     >
