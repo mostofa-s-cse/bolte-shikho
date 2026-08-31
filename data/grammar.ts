@@ -36,7 +36,7 @@ export const GRAMMAR_STEPS: GrammarStep[] = [
     ],
   },
   {
-    number: '२',
+    number: '২',
     title: 'Past Simple',
     intro: 'Already hoye geche emon kaj bolar jonno',
     blocks: [
@@ -51,7 +51,7 @@ export const GRAMMAR_STEPS: GrammarStep[] = [
     ],
   },
   {
-    number: '३',
+    number: '৩',
     title: 'Future Simple',
     intro: 'Pore hobe emon kaj bolar jonno',
     blocks: [
@@ -66,7 +66,7 @@ export const GRAMMAR_STEPS: GrammarStep[] = [
     ],
   },
   {
-    number: '४',
+    number: '৪',
     title: 'Irregular Verb',
     intro: "Ei verb gula-r past form 'ed' add kore hoy na — alada mukhosto korte hoy",
     blocks: [],
@@ -89,7 +89,7 @@ export const GRAMMAR_STEPS: GrammarStep[] = [
     },
   },
   {
-    number: '५',
+    number: '৫',
     title: 'Negative Sentence',
     intro: '"না" bolar jonno',
     blocks: [
@@ -105,7 +105,7 @@ export const GRAMMAR_STEPS: GrammarStep[] = [
     ],
   },
   {
-    number: '६',
+    number: '৬',
     title: 'Question Sentence',
     intro: 'Proshno korar jonno',
     blocks: [
@@ -130,7 +130,7 @@ export const GRAMMAR_STEPS: GrammarStep[] = [
     note: 'Mukhosto rakho: does/did use korle verb-e \'s\' ba \'ed\' add hoy na — base form thake. "Does she likes tea?" ভুল, "Does she like tea?" ঠিক।',
   },
   {
-    number: '७',
+    number: '৭',
     title: 'Present Continuous',
     intro: 'Ekhon, ei muhurte cholche emon kaj bolar jonno',
     blocks: [
@@ -159,7 +159,7 @@ export const GRAMMAR_STEPS: GrammarStep[] = [
     note: '"I eat rice" = roj/obbhas (habit) — "I am eating rice" = ekhon, ei muhurte (right now)',
   },
   {
-    number: '८',
+    number: '৮',
     title: 'Modal Verb',
     intro: 'Ability, permission, advice, obligation bolar jonno — daily conversation-e khub beshi lage',
     blocks: [
@@ -196,7 +196,7 @@ export const GRAMMAR_STEPS: GrammarStep[] = [
     note: 'Modal-er por verb-e kono \'s\', \'ed\', \'ing\' add hoy na। "She can goes" ভুল — "She can go" ঠিক।',
   },
   {
-    number: '९',
+    number: '৯',
     title: 'Article (a / an / the)',
     intro: 'a/an — kono ekta jinis (unspecified) — the — nirdishto/jana jinis (specific)',
     blocks: [
@@ -211,7 +211,7 @@ export const GRAMMAR_STEPS: GrammarStep[] = [
     ],
   },
   {
-    number: '१०',
+    number: '১০',
     title: 'Preposition',
     intro: 'Jaiga o shomoy bojhanor jonno',
     blocks: [
@@ -228,7 +228,7 @@ export const GRAMMAR_STEPS: GrammarStep[] = [
     ],
   },
   {
-    number: '११',
+    number: '১১',
     title: 'Connector (Conjunction)',
     intro: 'Duita sentence/word jog korar jonno',
     blocks: [
@@ -243,7 +243,7 @@ export const GRAMMAR_STEPS: GrammarStep[] = [
     ],
   },
   {
-    number: '१२',
+    number: '১২',
     title: 'Comparative & Superlative',
     intro: 'Duita jinis compare korte (comparative) o shobcheye beshi/kom bojhate (superlative)',
     blocks: [
@@ -264,7 +264,7 @@ export const GRAMMAR_STEPS: GrammarStep[] = [
     ],
   },
   {
-    number: '१३',
+    number: '১৩',
     title: 'Time Bola',
     intro: 'Somoy jiggesh kora o bola',
     blocks: [
@@ -279,7 +279,7 @@ export const GRAMMAR_STEPS: GrammarStep[] = [
     ],
   },
   {
-    number: '१४',
+    number: '১৪',
     title: "Possessive ('s) o Plural",
     intro: "Kar jinis eta bojhate 's — ekadhik bojhate 's' add hoy",
     blocks: [
@@ -300,7 +300,7 @@ export const GRAMMAR_STEPS: GrammarStep[] = [
     ],
   },
   {
-    number: '१५',
+    number: '১৫',
     title: 'Past Continuous',
     intro: 'Otite kono nirdishto somoy-e cholche emon kaj bolar jonno',
     blocks: [
