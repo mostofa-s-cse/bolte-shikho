@@ -1,3 +1,10 @@
+// Single source of truth for "today". Day boundaries are UTC: acceptable for
+// v1 because there is no per-user timezone preference yet, so everyone rolls
+// over at 06:00 Dhaka time. Per-user timezones are deliberately out of scope.
+export function todayISO(): string {
+  return new Date().toISOString().slice(0, 10)
+}
+
 export function dateFromStartOffset(startDate: string, offsetDays: number): string {
   const d = new Date(`${startDate}T00:00:00Z`)
   d.setUTCDate(d.getUTCDate() + offsetDays)
@@ -30,6 +37,20 @@ export function computeDayStatus(params: {
   if (scheduledDate > today) return 'future'
   if (checkedCount > 0) return 'partial'
   return 'missed'
+}
+
+// Counts consecutive practice days ending at `today`. A streak that ended
+// yesterday still counts (today just isn't logged yet), so counting starts at
+// `today` when it is present and at yesterday otherwise.
+export function computePracticeStreak(logDates: string[], today: string): number {
+  const logged = new Set(logDates)
+  let cursor = logged.has(today) ? today : dateFromStartOffset(today, -1)
+  let streak = 0
+  while (logged.has(cursor)) {
+    streak++
+    cursor = dateFromStartOffset(cursor, -1)
+  }
+  return streak
 }
 
 export interface DayScoreInput {
