@@ -1,6 +1,6 @@
 export const PLAN_TASKS: string[][] = [
   [
-    "Shobdo tab: Pronoun + Common Verb category poro (🔊 diye shuno)",
+    "Shobdo tab: Pronoun + Common Verb category poro",
     "Bakko o Tense: Step 1 Present Simple poro",
     "Ajker Practice-er prompt niye 3ta sentence likho",
     "Uccharon Check-e 5bar try koro"
@@ -34,7 +34,7 @@ export const PLAN_TASKS: string[][] = [
     "Uccharon Check 5bar"
   ],
   [
-    "Week 1 review — shob category-r word abar 🔊 diye shuno",
+    "Week 1 review — shob category-r word abar shuno",
     "Conversation Practice: Dialogue 1 (Introduction) role-play koro",
     "Listening 10 min"
   ],

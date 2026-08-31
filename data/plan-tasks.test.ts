@@ -10,4 +10,11 @@ describe('PLAN_TASKS', () => {
       expect(tasks.length).toBeGreaterThan(0)
     }
   })
+  // The UI uses lucide icons, not emoji — task copy must not reference a
+  // speaker emoji that appears nowhere on screen.
+  it('has no emoji in the task copy', () => {
+    for (const task of PLAN_TASKS.flat()) {
+      expect(task).not.toMatch(/\p{Extended_Pictographic}/u)
+    }
+  })
 })
