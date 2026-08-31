@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState, useSyncExternalStore } from 'react'
 import { Volume2, Mic, CheckCircle2, XCircle } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -12,10 +12,15 @@ const ALL_WORDS = VOCAB.flatMap((category) => category.words.map((w) => w.en))
 
 export function PronunciationCheck() {
   const { t, format } = useTranslations()
-  // Starts false to match SSR (no `window` on the server), then flips after
-  // mount once the browser's real capability is known.
-  const [supported, setSupported] = useState(false)
-  useEffect(() => setSupported(isSpeechRecognitionSupported()), [])
+  // Must read false during SSR/hydration (no `window` on the server) and the
+  // real capability after — useSyncExternalStore gives us that without a
+  // setState-in-effect: React uses getServerSnapshot (false) for SSR and the
+  // hydration render, then getSnapshot (the real check) once hydrated.
+  const supported = useSyncExternalStore(
+    () => () => {},
+    () => isSpeechRecognitionSupported(),
+    () => false
+  )
   const [target, setTarget] = useState(ALL_WORDS[0])
   const [result, setResult] = useState<{ ok: boolean; heard: string } | null>(null)
   const [listening, setListening] = useState(false)
