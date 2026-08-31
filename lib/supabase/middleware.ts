@@ -2,7 +2,9 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { stripLocale, withLocale } from '@/lib/i18n/locale-routing'
 
-export async function updateSession(request: NextRequest, response: NextResponse) {
+export async function updateSession(request: NextRequest, makeResponse: () => NextResponse) {
+  let response = makeResponse()
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -13,6 +15,7 @@ export async function updateSession(request: NextRequest, response: NextResponse
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+          response = makeResponse()
           cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options))
         },
       },

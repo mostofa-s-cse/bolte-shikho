@@ -5,7 +5,6 @@ import { DICTIONARIES } from './i18n/dictionary'
 const t = DICTIONARIES.bn.validation
 
 describe('safeRedirectPath', () => {
-  // unchanged from existing file
   it('keeps a same-site relative path', () => {
     expect(safeRedirectPath('/plan')).toBe('/plan')
     expect(safeRedirectPath('/vocab?tab=1')).toBe('/vocab?tab=1')

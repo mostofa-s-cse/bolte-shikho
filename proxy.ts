@@ -5,18 +5,18 @@ import { localeFromPathname, defaultLocale } from '@/lib/i18n/locale-routing'
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const found = localeFromPathname(pathname)
+  const locale = found ?? defaultLocale
 
-  let response: NextResponse
-  if (!found) {
-    const url = request.nextUrl.clone()
-    url.pathname = `/${defaultLocale}${pathname}`
-    response = NextResponse.rewrite(url)
-  } else {
-    response = NextResponse.next()
+  const url = request.nextUrl.clone()
+  if (!found) url.pathname = `/${defaultLocale}${pathname}`
+
+  const makeResponse = () => {
+    const response = found ? NextResponse.next({ request }) : NextResponse.rewrite(url, { request })
+    response.cookies.set('NEXT_LOCALE', locale)
+    return response
   }
-  response.cookies.set('NEXT_LOCALE', found ?? defaultLocale)
 
-  return updateSession(request, response)
+  return updateSession(request, makeResponse)
 }
 
 export const config = {

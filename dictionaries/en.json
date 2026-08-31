@@ -123,5 +123,9 @@
     "passwordTooShort": "Password must be at least 6 characters.",
     "nameRequired": "Enter a name.",
     "invalidConfirmLink": "This confirmation link isn't valid."
+  },
+  "meta": {
+    "title": "Bolte Shikho",
+    "description": "Spoken English learning platform for Bangla speakers"
   }
 }

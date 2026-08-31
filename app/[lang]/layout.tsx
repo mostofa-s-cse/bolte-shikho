@@ -25,9 +25,9 @@ const hindSiliguri = Hind_Siliguri({
   weight: ['400', '500', '600', '700'],
 })
 
-export const metadata: Metadata = {
-  title: 'Bolte Shikho',
-  description: 'Spoken English learning platform for Bangla speakers',
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getDictionary()
+  return { title: t.meta.title, description: t.meta.description }
 }
 
 export function generateStaticParams() {
