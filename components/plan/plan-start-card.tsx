@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { startPlan } from '@/app/plan/actions'
+import { startPlan } from '@/app/[lang]/plan/actions'
 
 export function PlanStartCard({ today }: { today: string }) {
   return (

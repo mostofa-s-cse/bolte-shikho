@@ -1,8 +1,11 @@
 import type { Metadata } from 'next'
 import { Fraunces, Work_Sans, Hind_Siliguri } from 'next/font/google'
-import './globals.css'
+import '../globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { SiteHeader } from '@/components/site-header'
+import { LocaleProvider } from '@/lib/i18n/locale-context'
+import { getDictionary } from '@/lib/i18n/get-dictionary'
+import { locales, type Locale } from '@/lib/i18n/locale-routing'
 
 const fraunces = Fraunces({
   subsets: ['latin'],
@@ -27,17 +30,33 @@ export const metadata: Metadata = {
   description: 'Spoken English learning platform for Bangla speakers',
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export function generateStaticParams() {
+  return locales.map((lang) => ({ lang }))
+}
+
+export default async function RootLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode
+  params: Promise<{ lang: string }>
+}) {
+  const { lang } = await params
+  const locale: Locale = lang === 'en' ? 'en' : 'bn'
+  const dict = await getDictionary()
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body
         suppressHydrationWarning
         className={`${fraunces.variable} ${workSans.variable} ${hindSiliguri.variable} font-sans bg-surface text-ink antialiased`}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <SiteHeader />
-          {children}
-        </ThemeProvider>
+        <LocaleProvider dict={dict} locale={locale}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <SiteHeader />
+            {children}
+          </ThemeProvider>
+        </LocaleProvider>
       </body>
     </html>
   )

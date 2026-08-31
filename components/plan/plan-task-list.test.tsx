@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { toggleTask } from '@/app/plan/actions'
+import { toggleTask } from '@/app/[lang]/plan/actions'
 import { PlanTaskList } from './plan-task-list'
 
-vi.mock('@/app/plan/actions', () => ({ toggleTask: vi.fn() }))
+vi.mock('@/app/[lang]/plan/actions', () => ({ toggleTask: vi.fn() }))
 
 describe('PlanTaskList', () => {
   beforeEach(() => {

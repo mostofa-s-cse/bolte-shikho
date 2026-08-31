@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { CheckCircle2, Flame } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { logPracticeToday } from '@/app/practice/actions'
+import { logPracticeToday } from '@/app/[lang]/practice/actions'
 
 export function PracticeStreak({
   initialStreak,

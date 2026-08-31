@@ -2,7 +2,7 @@
 
 import { useOptimistic, useTransition } from 'react'
 import { Checkbox } from '@/components/ui/checkbox'
-import { toggleTask } from '@/app/plan/actions'
+import { toggleTask } from '@/app/[lang]/plan/actions'
 
 export function PlanTaskList({
   day,

@@ -4,39 +4,29 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-
-const FEATURES = [
-  { title: 'Shobdo', href: '/vocab', body: '250+ daily-use word, audio uccharon shoho, quiz mode.' },
-  {
-    title: 'Bakko o Tense',
-    href: '/grammar',
-    body: '15 step-e English grammar — tense theke comparative porjonto.',
-  },
-  {
-    title: 'Practice',
-    href: '/practice',
-    body: 'Mic diye uccharon check, conversation dialogue, daily prompt.',
-  },
-  {
-    title: '30 Din Plan',
-    href: '/plan',
-    body: 'Roj-er target, score system, on-time/late calendar tracking.',
-  },
-  { title: 'Translator', href: '/translate', body: 'English ↔ Bangla, mic diye bolo, shune nao.' },
-]
+import { useTranslations } from '@/lib/i18n/locale-context'
+import { withLocale } from '@/lib/i18n/locale-routing'
 
 export default function LandingPage() {
+  const { t, locale } = useTranslations()
+
+  const FEATURES = [
+    { ...t.home.features.vocab, href: withLocale('/vocab', locale) },
+    { ...t.home.features.grammar, href: withLocale('/grammar', locale) },
+    { ...t.home.features.practice, href: withLocale('/practice', locale) },
+    { ...t.home.features.plan, href: withLocale('/plan', locale) },
+    { ...t.home.features.translate, href: withLocale('/translate', locale) },
+  ]
+
   return (
     <main>
       <section className="mx-auto flex max-w-4xl flex-col items-center gap-6 px-6 py-24 text-center">
         <h1 className="font-display text-4xl font-semibold text-balance md:text-5xl">
-          Bangla theke English-e — bolte shikho, ekhon theke.
+          {t.home.heading}
         </h1>
-        <p className="max-w-xl text-lg text-ink-muted">
-          Shobdo, grammar, uccharon practice, ar ekta 30 diner plan — shob ekjaigay.
-        </p>
-        <Link href="/signup">
-          <Button size="default">Ajke Shuru Koro</Button>
+        <p className="max-w-xl text-lg text-ink-muted">{t.home.sub}</p>
+        <Link href={withLocale('/signup', locale)}>
+          <Button size="default">{t.home.cta}</Button>
         </Link>
       </section>
 
