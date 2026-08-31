@@ -1,7 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import { validateCredentials, validateName, safeRedirectPath } from './validation'
+import { DICTIONARIES } from './i18n/dictionary'
+
+const t = DICTIONARIES.bn.validation
 
 describe('safeRedirectPath', () => {
+  // unchanged from existing file
   it('keeps a same-site relative path', () => {
     expect(safeRedirectPath('/plan')).toBe('/plan')
     expect(safeRedirectPath('/vocab?tab=1')).toBe('/vocab?tab=1')
@@ -24,27 +28,27 @@ describe('safeRedirectPath', () => {
 
 describe('validateCredentials', () => {
   it('rejects an empty email', () => {
-    expect(validateCredentials('', 'password123')).toBe('Email dao.')
+    expect(validateCredentials(t, '', 'password123')).toBe(t.emailRequired)
   })
   it('rejects an email without @', () => {
-    expect(validateCredentials('not-an-email', 'password123')).toBe('Shothik email dao.')
+    expect(validateCredentials(t, 'not-an-email', 'password123')).toBe(t.emailInvalid)
   })
   it('rejects a password shorter than 6 characters', () => {
-    expect(validateCredentials('a@b.com', '123')).toBe('Password kompokkhe 6 character hote hobe.')
+    expect(validateCredentials(t, 'a@b.com', '123')).toBe(t.passwordTooShort)
   })
   it('returns null for valid credentials', () => {
-    expect(validateCredentials('a@b.com', 'password123')).toBeNull()
+    expect(validateCredentials(t, 'a@b.com', 'password123')).toBeNull()
   })
 })
 
 describe('validateName', () => {
   it('rejects an empty name', () => {
-    expect(validateName('')).toBe('Naam dao.')
+    expect(validateName(t, '')).toBe(t.nameRequired)
   })
   it('rejects a whitespace-only name', () => {
-    expect(validateName('   ')).toBe('Naam dao.')
+    expect(validateName(t, '   ')).toBe(t.nameRequired)
   })
   it('returns null for a valid name', () => {
-    expect(validateName('Mostofa')).toBeNull()
+    expect(validateName(t, 'Mostofa')).toBeNull()
   })
 })

@@ -121,6 +121,7 @@
     "emailRequired": "Enter an email.",
     "emailInvalid": "Enter a valid email.",
     "passwordTooShort": "Password must be at least 6 characters.",
-    "nameRequired": "Enter a name."
+    "nameRequired": "Enter a name.",
+    "invalidConfirmLink": "This confirmation link isn't valid."
   }
 }
