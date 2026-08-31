@@ -1,4 +1,7 @@
+'use client'
+
 import { Card } from '@/components/ui/card'
+import { useTranslations } from '@/lib/i18n/locale-context'
 
 export function PlanScoreCard({
   score,
@@ -11,10 +14,11 @@ export function PlanScoreCard({
   totalDays: number
   doneOnTime: number
 }) {
+  const { t } = useTranslations()
   const stats = [
-    { label: 'Score', value: score },
-    { label: 'Aj Day / Total', value: `${currentDay}/${totalDays}` },
-    { label: 'Din Sesh (on time)', value: doneOnTime },
+    { label: t.plan.score, value: score },
+    { label: t.plan.dayOfTotal, value: `${currentDay}/${totalDays}` },
+    { label: t.plan.onTime, value: doneOnTime },
   ]
   return (
     <Card>

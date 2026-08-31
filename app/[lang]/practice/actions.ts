@@ -12,6 +12,6 @@ export async function logPracticeToday() {
   if (!user) return { loggedIn: false as const }
 
   await supabase.from('practice_log').upsert({ user_id: user.id, log_date: todayISO() })
-  revalidatePath('/practice')
+  revalidatePath('/[lang]/practice', 'page')
   return { loggedIn: true as const }
 }

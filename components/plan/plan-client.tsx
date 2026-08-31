@@ -6,6 +6,7 @@ import type { DayStatus } from '@/lib/scoring'
 import { PlanScoreCard } from './plan-score-card'
 import { PlanCalendar } from './plan-calendar'
 import { PlanTaskList } from './plan-task-list'
+import { useTranslations } from '@/lib/i18n/locale-context'
 
 export function PlanClient({
   currentDay,
@@ -20,6 +21,7 @@ export function PlanClient({
   doneOnTime: number
   checkedByDay: boolean[][]
 }) {
+  const { t, format } = useTranslations()
   const [selected, setSelected] = useState(currentDay)
 
   return (
@@ -33,7 +35,7 @@ export function PlanClient({
         onSelect={setSelected}
       />
       <div>
-        <h2 className="mb-2 font-semibold">Day {selected}</h2>
+        <h2 className="mb-2 font-semibold">{format(t.plan.day, { day: selected })}</h2>
         <PlanTaskList day={selected} tasks={PLAN_TASKS[selected - 1]} checked={checkedByDay[selected - 1]} />
       </div>
     </div>

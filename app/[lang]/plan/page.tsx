@@ -9,20 +9,22 @@ import {
 } from '@/lib/scoring'
 import { PlanStartCard } from '@/components/plan/plan-start-card'
 import { PlanClient } from '@/components/plan/plan-client'
+import { getDictionary } from '@/lib/i18n/get-dictionary'
 
 export default async function PlanPage() {
   const supabase = await createServerSupabaseClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
+  const t = await getDictionary()
 
   const today = todayISO()
 
   if (!user) {
     return (
       <main className="mx-auto max-w-5xl px-6 py-10">
-        <h1 className="font-display text-2xl font-semibold">30 Din Plan</h1>
-        <p className="mt-4 font-bengali text-ink-muted">Plan dekhte/shuru korte login koro.</p>
+        <h1 className="font-display text-2xl font-semibold">{t.plan.headingGuest}</h1>
+        <p className="mt-4 font-bengali text-ink-muted">{t.plan.loginPrompt}</p>
       </main>
     )
   }
@@ -36,7 +38,7 @@ export default async function PlanPage() {
   if (!startRow) {
     return (
       <main className="mx-auto max-w-5xl px-6 py-10">
-        <h1 className="font-display text-2xl font-semibold">30 Din Plan</h1>
+        <h1 className="font-display text-2xl font-semibold">{t.plan.headingGuest}</h1>
         <div className="mt-6">
           <PlanStartCard today={today} />
         </div>
@@ -81,7 +83,7 @@ export default async function PlanPage() {
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-10">
-      <h1 className="font-display text-2xl font-semibold">30 Din Plan o Score</h1>
+      <h1 className="font-display text-2xl font-semibold">{t.plan.headingScore}</h1>
       <PlanClient
         currentDay={currentDay}
         statuses={statuses}

@@ -12,7 +12,7 @@ export async function startPlan() {
   if (!user) return
 
   await supabase.from('plan_start').upsert({ user_id: user.id, start_date: todayISO() })
-  revalidatePath('/plan')
+  revalidatePath('/[lang]/plan', 'page')
 }
 
 export async function toggleTask(planDay: number, taskIndex: number, completed: boolean, taskCount: number) {
@@ -59,5 +59,5 @@ export async function toggleTask(planDay: number, taskIndex: number, completed: 
     }
   }
 
-  revalidatePath('/plan')
+  revalidatePath('/[lang]/plan', 'page')
 }
