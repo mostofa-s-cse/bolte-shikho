@@ -5,12 +5,13 @@ import { ArrowLeftRight, Volume2, Mic } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { speak, createRecognition } from '@/lib/speech'
+import { useTranslations } from '@/lib/i18n/locale-context'
 
 type Lang = 'en' | 'bn'
 
-const LABEL: Record<Lang, string> = { en: 'English', bn: 'বাংলা' }
-
 export function TranslatorForm() {
+  const { t } = useTranslations()
+  const LABEL: Record<Lang, string> = { en: t.translate.langEn, bn: t.translate.langBn }
   const [from, setFrom] = useState<Lang>('en')
   const [to, setTo] = useState<Lang>('bn')
   const [text, setText] = useState('')
@@ -29,10 +30,10 @@ export function TranslatorForm() {
         body: JSON.stringify({ text, from, to }),
       })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error ?? 'Translation failed')
+      if (!res.ok) throw new Error(data.error ?? t.translate.genericError)
       setResult(data.translatedText)
     } catch {
-      setError('Translate korte parlam na. Abar try koro.')
+      setError(t.translate.error)
     } finally {
       setLoading(false)
     }
@@ -57,7 +58,12 @@ export function TranslatorForm() {
     <Card>
       <div className="flex items-center justify-between">
         <span className="font-semibold">{LABEL[from]}</span>
-        <button type="button" onClick={swap} aria-label="Swap languages" className="cursor-pointer rounded-md p-1 hover:bg-surface-alt">
+        <button
+          type="button"
+          onClick={swap}
+          aria-label={t.translate.swap}
+          className="cursor-pointer rounded-md p-1 hover:bg-surface-alt"
+        >
           <ArrowLeftRight size={16} />
         </button>
         <span className="font-semibold">{LABEL[to]}</span>
@@ -67,19 +73,17 @@ export function TranslatorForm() {
         value={text}
         onChange={(e) => setText(e.target.value)}
         rows={4}
-        // Mirrors MAX_TEXT_LENGTH in /api/translate so the cap is visible in
-        // the UI instead of surfacing as a generic error.
         maxLength={490}
-        placeholder="Lekho..."
+        placeholder={t.translate.placeholder}
         className="mt-3 w-full rounded-lg border border-border bg-surface p-3 font-bengali text-sm"
       />
 
       <div className="mt-2 flex gap-2">
-        <Button variant="ghost" size="sm" onClick={startMic} type="button" aria-label="Speak to fill the text">
+        <Button variant="ghost" size="sm" onClick={startMic} type="button" aria-label={t.translate.speakToFill}>
           <Mic size={16} />
         </Button>
         <Button size="sm" onClick={translate} disabled={loading} type="button">
-          {loading ? 'Translate hocche...' : 'Translate Koro'}
+          {loading ? t.translate.translating : t.translate.translateButton}
         </Button>
       </div>
 
@@ -91,10 +95,10 @@ export function TranslatorForm() {
           <button
             type="button"
             onClick={() => speak(result, 1, to === 'bn' ? 'bn-BD' : 'en-US')}
-            aria-label="Listen"
+            aria-label={t.translate.listen}
             className="mt-2 flex cursor-pointer items-center gap-1 text-sm text-accent"
           >
-            <Volume2 size={14} /> Shuno
+            <Volume2 size={14} /> {t.translate.listen}
           </button>
         </div>
       )}
