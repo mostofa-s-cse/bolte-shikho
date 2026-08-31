@@ -11,12 +11,21 @@ const ALL_WORDS = VOCAB.flatMap((category) => category.words.map((w) => w.en))
 
 export function PronunciationCheck() {
   const supported = useMemo(() => isSpeechRecognitionSupported(), [])
-  const [target, setTarget] = useState(() => ALL_WORDS[Math.floor(Math.random() * ALL_WORDS.length)])
+  // Starts deterministically at the first word: Math.random() in the
+  // initializer produced a different value on the server than at hydration,
+  // which mismatched and made the visible word swap right after load.
+  // "Notun Word" is how you get a different one.
+  const [target, setTarget] = useState(ALL_WORDS[0])
   const [result, setResult] = useState<{ ok: boolean; heard: string } | null>(null)
   const [listening, setListening] = useState(false)
 
   function nextTarget() {
-    setTarget(ALL_WORDS[Math.floor(Math.random() * ALL_WORDS.length)])
+    setTarget((current) => {
+      if (ALL_WORDS.length <= 1) return current
+      let next = current
+      while (next === current) next = ALL_WORDS[Math.floor(Math.random() * ALL_WORDS.length)]
+      return next
+    })
     setResult(null)
   }
 

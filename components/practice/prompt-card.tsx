@@ -5,7 +5,11 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
 export function PromptCard({ prompts }: { prompts: string[] }) {
-  const [index, setIndex] = useState(() => Math.floor(Math.random() * prompts.length))
+  // Starts deterministically at the first prompt: Math.random() in the
+  // initializer produced a different value on the server than at hydration,
+  // which mismatched and made the visible prompt swap right after load.
+  // "Notun Prompt" is how you get a different one.
+  const [index, setIndex] = useState(0)
 
   function next() {
     setIndex((current) => {
