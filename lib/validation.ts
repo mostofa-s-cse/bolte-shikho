@@ -14,3 +14,8 @@ export function validateCredentials(email: string, password: string): string | n
   if (password.length < 6) return 'Password kompokkhe 6 character hote hobe.'
   return null
 }
+
+export function validateName(name: string): string | null {
+  if (!name.trim()) return 'Naam dao.'
+  return null
+}

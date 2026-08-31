@@ -17,6 +17,10 @@ export default async function SignupPage({
         {error && <p className="mt-3 rounded-lg bg-bad/10 p-3 text-sm text-bad">{error}</p>}
         <form action={signUp} className="mt-6 flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
+            <Label htmlFor="name">Naam</Label>
+            <Input id="name" name="name" type="text" required />
+          </div>
+          <div className="flex flex-col gap-1.5">
             <Label htmlFor="email">Email</Label>
             <Input id="email" name="email" type="email" required />
           </div>

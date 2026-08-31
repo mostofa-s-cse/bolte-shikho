@@ -3,17 +3,25 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
-import { validateCredentials, safeRedirectPath } from '@/lib/validation'
+import { validateCredentials, validateName, safeRedirectPath } from '@/lib/validation'
 
 export async function signUp(formData: FormData) {
+  const name = String(formData.get('name') ?? '')
   const email = String(formData.get('email') ?? '')
   const password = String(formData.get('password') ?? '')
+
+  const nameError = validateName(name)
+  if (nameError) redirect(`/signup?error=${encodeURIComponent(nameError)}`)
 
   const error = validateCredentials(email, password)
   if (error) redirect(`/signup?error=${encodeURIComponent(error)}`)
 
   const supabase = await createServerSupabaseClient()
-  const { data, error: signUpError } = await supabase.auth.signUp({ email, password })
+  const { data, error: signUpError } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { full_name: name.trim() } },
+  })
   if (signUpError) redirect(`/signup?error=${encodeURIComponent(signUpError.message)}`)
 
   // With "Confirm email" enabled (the default on a new Supabase project)

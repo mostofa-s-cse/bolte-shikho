@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { validateCredentials, safeRedirectPath } from './validation'
+import { validateCredentials, validateName, safeRedirectPath } from './validation'
 
 describe('safeRedirectPath', () => {
   it('keeps a same-site relative path', () => {
@@ -34,5 +34,17 @@ describe('validateCredentials', () => {
   })
   it('returns null for valid credentials', () => {
     expect(validateCredentials('a@b.com', 'password123')).toBeNull()
+  })
+})
+
+describe('validateName', () => {
+  it('rejects an empty name', () => {
+    expect(validateName('')).toBe('Naam dao.')
+  })
+  it('rejects a whitespace-only name', () => {
+    expect(validateName('   ')).toBe('Naam dao.')
+  })
+  it('returns null for a valid name', () => {
+    expect(validateName('Mostofa')).toBeNull()
   })
 })
