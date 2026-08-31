@@ -33,7 +33,7 @@ export function GrammarSteps({ steps }: { steps: GrammarStep[] }) {
                           type="button"
                           aria-label="Listen"
                           onClick={() => speak(example.en)}
-                          className="rounded-md p-1 text-accent hover:bg-surface-alt"
+                          className="cursor-pointer rounded-md p-1 text-accent hover:bg-surface-alt"
                         >
                           <Volume2 size={14} />
                         </button>

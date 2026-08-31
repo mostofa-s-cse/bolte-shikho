@@ -39,7 +39,7 @@ export function TabsTrigger({ value, children }: { value: string; children: Reac
       type="button"
       onClick={() => ctx.setValue(value)}
       className={cn(
-        'rounded-full border px-4 py-2 text-sm font-semibold transition-colors',
+        'cursor-pointer rounded-full border px-4 py-2 text-sm font-semibold transition-colors',
         active
           ? 'border-accent bg-accent text-accent-ink'
           : 'border-border bg-surface text-ink-muted hover:text-ink'

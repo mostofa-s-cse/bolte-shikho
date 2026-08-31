@@ -19,7 +19,7 @@ export function DialogueList({ dialogues }: { dialogues: Dialogue[] }) {
                     type="button"
                     aria-label="Listen"
                     onClick={() => speak(line.en)}
-                    className="rounded-md p-1 text-accent hover:bg-surface-alt"
+                    className="cursor-pointer rounded-md p-1 text-accent hover:bg-surface-alt"
                   >
                     <Volume2 size={14} />
                   </button>

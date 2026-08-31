@@ -19,7 +19,7 @@ export function CategoryChips({
           type="button"
           onClick={() => onChange(category)}
           className={cn(
-            'flex-none whitespace-nowrap rounded-full border px-3 py-1.5 text-sm font-medium',
+            'flex-none cursor-pointer whitespace-nowrap rounded-full border px-3 py-1.5 text-sm font-medium',
             active === category
               ? 'border-accent bg-accent text-accent-ink'
               : 'border-border bg-surface text-ink-muted'

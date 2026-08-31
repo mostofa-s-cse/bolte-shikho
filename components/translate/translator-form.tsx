@@ -57,7 +57,7 @@ export function TranslatorForm() {
     <Card>
       <div className="flex items-center justify-between">
         <span className="font-semibold">{LABEL[from]}</span>
-        <button type="button" onClick={swap} aria-label="Swap languages" className="rounded-md p-1 hover:bg-surface-alt">
+        <button type="button" onClick={swap} aria-label="Swap languages" className="cursor-pointer rounded-md p-1 hover:bg-surface-alt">
           <ArrowLeftRight size={16} />
         </button>
         <span className="font-semibold">{LABEL[to]}</span>
@@ -92,7 +92,7 @@ export function TranslatorForm() {
             type="button"
             onClick={() => speak(result, 1, to === 'bn' ? 'bn-BD' : 'en-US')}
             aria-label="Listen"
-            className="mt-2 flex items-center gap-1 text-sm text-accent"
+            className="mt-2 flex cursor-pointer items-center gap-1 text-sm text-accent"
           >
             <Volume2 size={14} /> Shuno
           </button>

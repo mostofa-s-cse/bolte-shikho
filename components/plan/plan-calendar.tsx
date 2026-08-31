@@ -32,7 +32,7 @@ export function PlanCalendar({
           type="button"
           onClick={() => onSelect(day)}
           className={cn(
-            'aspect-square rounded-lg border text-xs font-semibold tabular-nums',
+            'aspect-square cursor-pointer rounded-lg border text-xs font-semibold tabular-nums',
             STATUS_CLASSES[statuses[day - 1]],
             day === today && 'border-2 border-accent',
             day === selected && 'ring-2 ring-ink ring-offset-1'

@@ -18,7 +18,7 @@ export function MobileNav() {
         aria-label={open ? 'Close menu' : 'Open menu'}
         aria-expanded={open}
         aria-controls="mobile-nav-panel"
-        className="rounded-md p-2 text-ink-muted hover:bg-surface-alt hover:text-ink"
+        className="cursor-pointer rounded-md p-2 text-ink-muted hover:bg-surface-alt hover:text-ink"
       >
         {open ? <X size={20} /> : <Menu size={20} />}
       </button>

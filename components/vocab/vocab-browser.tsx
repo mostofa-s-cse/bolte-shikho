@@ -34,14 +34,14 @@ export function VocabBrowser() {
           <button
             type="button"
             onClick={() => setRate(1)}
-            className={rate === 1 ? 'font-semibold text-accent' : ''}
+            className={`cursor-pointer ${rate === 1 ? 'font-semibold text-accent' : ''}`}
           >
             Normal speed
           </button>
           <button
             type="button"
             onClick={() => setRate(0.7)}
-            className={rate === 0.7 ? 'font-semibold text-accent' : ''}
+            className={`cursor-pointer ${rate === 0.7 ? 'font-semibold text-accent' : ''}`}
           >
             Slow speed
           </button>
