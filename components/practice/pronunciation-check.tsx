@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Volume2, Mic, CheckCircle2, XCircle } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -10,7 +10,12 @@ import { speak, normalizeSpeech, isSpeechRecognitionSupported, createRecognition
 const ALL_WORDS = VOCAB.flatMap((category) => category.words.map((w) => w.en))
 
 export function PronunciationCheck() {
-  const supported = useMemo(() => isSpeechRecognitionSupported(), [])
+  // Starts false to match SSR (no `window` on the server), then flips after
+  // mount once the browser's real capability is known — computing this in
+  // useMemo instead mismatched immediately, since the client's first render
+  // already has `window` while the server's didn't.
+  const [supported, setSupported] = useState(false)
+  useEffect(() => setSupported(isSpeechRecognitionSupported()), [])
   // Starts deterministically at the first word: Math.random() in the
   // initializer produced a different value on the server than at hydration,
   // which mismatched and made the visible word swap right after load.
