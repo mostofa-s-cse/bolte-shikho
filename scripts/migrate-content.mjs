@@ -45,3 +45,16 @@ fs.writeFileSync(path.join(OUT_DIR, 'vocab.ts'), vocabTs)
 console.log(
   `Wrote data/vocab.ts (${vocab.length} categories, ${vocab.reduce((n, c) => n + c.words.length, 0)} words)`
 )
+
+// ---- 30-day plan tasks ----
+const PLAN = extractArray('PLAN')
+const planTasks = PLAN.map((day) => day.tasks)
+const planTs = `export const PLAN_TASKS: string[][] = ${JSON.stringify(planTasks, null, 2)}\n`
+fs.writeFileSync(path.join(OUT_DIR, 'plan-tasks.ts'), planTs)
+console.log(`Wrote data/plan-tasks.ts (${planTasks.length} days)`)
+
+// ---- Daily writing prompts ----
+const PROMPTS = extractArray('PROMPTS')
+const promptsTs = `export const PROMPTS: string[] = ${JSON.stringify(PROMPTS, null, 2)}\n`
+fs.writeFileSync(path.join(OUT_DIR, 'prompts.ts'), promptsTs)
+console.log(`Wrote data/prompts.ts (${PROMPTS.length} prompts)`)
