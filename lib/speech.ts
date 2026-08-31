@@ -28,11 +28,29 @@ export function isSpeechRecognitionSupported(): boolean {
   return !!(window as any).SpeechRecognition || !!(window as any).webkitSpeechRecognition
 }
 
-export function createRecognition(): SpeechRecognition | null {
+// The Web Speech API's SpeechRecognition interface isn't part of
+// TypeScript's standard DOM lib (it never shipped as a finished web
+// standard), so `next build`'s type-check has no built-in type for it.
+// This is a minimal shape covering only what this app actually uses.
+export interface SpeechRecognitionEvent {
+  results: { [index: number]: { [index: number]: { transcript: string } } }
+}
+
+export interface SpeechRecognitionLike {
+  lang: string
+  interimResults: boolean
+  maxAlternatives: number
+  onresult: ((event: SpeechRecognitionEvent) => void) | null
+  onerror: (() => void) | null
+  onend: (() => void) | null
+  start(): void
+}
+
+export function createRecognition(): SpeechRecognitionLike | null {
   if (typeof window === 'undefined') return null
   const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
   if (!SR) return null
-  const recognition = new SR() as SpeechRecognition
+  const recognition = new SR() as SpeechRecognitionLike
   recognition.lang = 'en-US'
   recognition.interimResults = false
   recognition.maxAlternatives = 1
