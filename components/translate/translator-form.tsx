@@ -90,7 +90,7 @@ export function TranslatorForm() {
           <p className="font-bengali text-lg">{result}</p>
           <button
             type="button"
-            onClick={() => speak(result)}
+            onClick={() => speak(result, 1, to === 'bn' ? 'bn-BD' : 'en-US')}
             aria-label="Listen"
             className="mt-2 flex items-center gap-1 text-sm text-accent"
           >

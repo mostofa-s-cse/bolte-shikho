@@ -46,6 +46,16 @@ describe('speak', () => {
     expect(lastUtterance().text).toBe('I go to school.')
   })
 
+  it('defaults to an English voice', () => {
+    speak('hello')
+    expect(lastUtterance().lang).toBe('en-US')
+  })
+
+  it('uses the language it is given', () => {
+    speak('হ্যালো', 1, 'bn-BD')
+    expect(lastUtterance().lang).toBe('bn-BD')
+  })
+
   it('does nothing when speechSynthesis is unavailable', () => {
     vi.stubGlobal('speechSynthesis', undefined)
     expect(() => speak('hello')).not.toThrow()

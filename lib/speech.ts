@@ -6,7 +6,10 @@ export function normalizeSpeech(text: string): string {
     .trim()
 }
 
-export function speak(text: string, rate = 1): void {
+// `lang` picks the voice. It defaults to English because most callers read
+// back English vocabulary; the translator passes 'bn-BD' when the result it
+// is speaking is Bangla.
+export function speak(text: string, rate = 1, lang = 'en-US'): void {
   if (typeof window === 'undefined' || !('speechSynthesis' in window) || !window.speechSynthesis) {
     return
   }
@@ -18,7 +21,7 @@ export function speak(text: string, rate = 1): void {
     .replace(/\s+([.!?,;:])/g, '$1')
     .trim()
   const utterance = new SpeechSynthesisUtterance(clean)
-  utterance.lang = 'en-US'
+  utterance.lang = lang
   utterance.rate = rate
   window.speechSynthesis.speak(utterance)
 }
