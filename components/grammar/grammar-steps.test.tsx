@@ -1,7 +1,8 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { GrammarSteps } from './grammar-steps'
 import type { GrammarStep } from '@/data/grammar'
+import { renderWithLocale } from '@/test/render-with-locale'
 
 const STEPS: GrammarStep[] = [
   {
@@ -25,7 +26,7 @@ const STEPS: GrammarStep[] = [
 
 describe('GrammarSteps', () => {
   it('renders a step title, its structure, and its examples', () => {
-    render(<GrammarSteps steps={STEPS} />)
+    renderWithLocale(<GrammarSteps steps={STEPS} />)
     expect(screen.getByText('Present Simple')).toBeInTheDocument()
     expect(screen.getByText('Subject + verb')).toBeInTheDocument()
     expect(screen.getByText('I go.')).toBeInTheDocument()
@@ -33,7 +34,7 @@ describe('GrammarSteps', () => {
   })
 
   it('renders a table when the step has one instead of examples', () => {
-    render(<GrammarSteps steps={STEPS} />)
+    renderWithLocale(<GrammarSteps steps={STEPS} />)
     expect(screen.getByText('Irregular Verb')).toBeInTheDocument()
     expect(screen.getByRole('cell', { name: 'went' })).toBeInTheDocument()
   })

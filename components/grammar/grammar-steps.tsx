@@ -3,8 +3,10 @@
 import { Volume2 } from 'lucide-react'
 import type { GrammarStep } from '@/data/grammar'
 import { speak } from '@/lib/speech'
+import { useTranslations } from '@/lib/i18n/locale-context'
 
 export function GrammarSteps({ steps }: { steps: GrammarStep[] }) {
+  const { t } = useTranslations()
   return (
     <div className="flex flex-col gap-10">
       {steps.map((step) => (
@@ -31,7 +33,7 @@ export function GrammarSteps({ steps }: { steps: GrammarStep[] }) {
                         {example.en}
                         <button
                           type="button"
-                          aria-label="Listen"
+                          aria-label={t.grammar.listen}
                           onClick={() => speak(example.en)}
                           className="cursor-pointer rounded-md p-1 text-accent hover:bg-surface-alt"
                         >
