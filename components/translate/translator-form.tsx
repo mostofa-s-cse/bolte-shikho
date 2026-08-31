@@ -67,6 +67,9 @@ export function TranslatorForm() {
         value={text}
         onChange={(e) => setText(e.target.value)}
         rows={4}
+        // Mirrors MAX_TEXT_LENGTH in /api/translate so the cap is visible in
+        // the UI instead of surfacing as a generic error.
+        maxLength={490}
         placeholder="Lekho..."
         className="mt-3 w-full rounded-lg border border-border bg-surface p-3 font-bengali text-sm"
       />
