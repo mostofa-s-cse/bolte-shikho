@@ -1088,7 +1088,14 @@ git mv app/login "app/[lang]/login"
 git mv app/signup "app/[lang]/signup"
 ```
 
-(`app/plan/actions.ts` and `app/practice/actions.ts` move along with their directories — they're addressed by import path, not URL, so no further change needed here; their `revalidatePath` calls are updated in Task 12.)
+`app/plan/actions.ts` and `app/practice/actions.ts` move along with their directories — but unlike the page files, they ARE imported by absolute path (`@/app/plan/actions`, `@/app/practice/actions`) from other components, and those import paths must change to `@/app/[lang]/plan/actions` / `@/app/[lang]/practice/actions` now that the files physically live there. Update every consumer in this task:
+
+- `components/plan/plan-task-list.tsx` — change `from '@/app/plan/actions'` to `from '@/app/[lang]/plan/actions'`
+- `components/plan/plan-task-list.test.tsx` — change both the import and the `vi.mock('@/app/plan/actions', ...)` call to `'@/app/[lang]/plan/actions'`
+- `components/plan/plan-start-card.tsx` — change `from '@/app/plan/actions'` to `from '@/app/[lang]/plan/actions'` (this file's own content is otherwise rewritten in Task 12 — this is just so the app keeps building in the meantime)
+- `components/practice/practice-streak.tsx` — change `from '@/app/practice/actions'` to `from '@/app/[lang]/practice/actions'` (same note — content rewritten in Task 11)
+
+(Their `revalidatePath` calls are updated separately, in Task 12.)
 
 - [ ] **Step 2: Create the new root layout**
 
@@ -2048,7 +2055,7 @@ import { useState } from 'react'
 import { CheckCircle2, Flame } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { logPracticeToday } from '@/app/practice/actions'
+import { logPracticeToday } from '@/app/[lang]/practice/actions'
 import { useTranslations } from '@/lib/i18n/locale-context'
 
 export function PracticeStreak({
@@ -2320,12 +2327,12 @@ git commit -m "feat(i18n): translate the practice page and its components"
 - Modify: `components/plan/plan-client.tsx`
 - Modify: `components/plan/plan-score-card.tsx`
 - Modify: `components/plan/plan-start-card.tsx`
-- Modify: `app/plan/actions.ts`
-- Modify: `app/practice/actions.ts`
+- Modify: `app/[lang]/plan/actions.ts`
+- Modify: `app/[lang]/practice/actions.ts`
 
 **Interfaces:**
 - Consumes: `getDictionary()` (Task 3), `useTranslations()`, `format()` (Task 4).
-- Note: `plan-calendar.tsx` and `plan-task-list.tsx` need no changes — confirmed in the spec's inventory they carry no literal UI strings (day numbers and task text, the latter from `data/plan-tasks.ts`, out of scope).
+- Note: `plan-calendar.tsx` and `plan-task-list.tsx` need no changes in THIS task — confirmed in the spec's inventory they carry no literal UI strings (day numbers and task text, the latter from `data/plan-tasks.ts`, out of scope). Task 7 already updated `plan-task-list.tsx`'s import path (`@/app/[lang]/plan/actions`) as a necessary side effect of the directory move — that's already done, not this task's concern.
 
 - [ ] **Step 1: Update `app/[lang]/plan/page.tsx`**
 
@@ -2536,7 +2543,7 @@ import { useTranslations } from '@/lib/i18n/locale-context'
 
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { startPlan } from '@/app/plan/actions'
+import { startPlan } from '@/app/[lang]/plan/actions'
 import { useTranslations } from '@/lib/i18n/locale-context'
 
 export function PlanStartCard({ today }: { today: string }) {
@@ -2559,19 +2566,19 @@ export function PlanStartCard({ today }: { today: string }) {
 
 Note: this file was previously a Server Component (no `'use client'`, rendered directly by the async `PlanPage`). It now needs `'use client'` since it calls `useTranslations()`. `startPlan` is a Server Action imported into a Client Component, which is the standard, supported pattern (same as `plan-task-list.tsx` already does with `toggleTask`).
 
-- [ ] **Step 5: Update `app/plan/actions.ts`** (only the two `revalidatePath` calls change)
+- [ ] **Step 5: Update `app/[lang]/plan/actions.ts`** (only the two `revalidatePath` calls change)
 
 ```ts
-// app/plan/actions.ts (change both occurrences)
+// app/[lang]/plan/actions.ts (change both occurrences)
 revalidatePath('/[lang]/plan', 'page')
 ```
 
 (Two call sites: end of `startPlan` and end of `toggleTask`. Leave everything else in the file unchanged.)
 
-- [ ] **Step 6: Update `app/practice/actions.ts`** (the one `revalidatePath` call changes)
+- [ ] **Step 6: Update `app/[lang]/practice/actions.ts`** (the one `revalidatePath` call changes)
 
 ```ts
-// app/practice/actions.ts (change the one occurrence)
+// app/[lang]/practice/actions.ts (change the one occurrence)
 revalidatePath('/[lang]/practice', 'page')
 ```
 
@@ -2592,7 +2599,7 @@ Run: `npm run dev`, log in, visit `/plan` and `/en/plan`, toggle a task checkbox
 - [ ] **Step 10: Commit**
 
 ```bash
-git add "app/[lang]/plan" components/plan app/plan/actions.ts app/practice/actions.ts
+git add "app/[lang]/plan" components/plan "app/[lang]/plan/actions.ts" "app/[lang]/practice/actions.ts"
 git commit -m "feat(i18n): translate the plan page, fix revalidatePath for [lang] routes"
 ```
 
