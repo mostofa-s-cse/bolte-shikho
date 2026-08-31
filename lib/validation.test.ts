@@ -1,5 +1,26 @@
 import { describe, it, expect } from 'vitest'
-import { validateCredentials } from './validation'
+import { validateCredentials, safeRedirectPath } from './validation'
+
+describe('safeRedirectPath', () => {
+  it('keeps a same-site relative path', () => {
+    expect(safeRedirectPath('/plan')).toBe('/plan')
+    expect(safeRedirectPath('/vocab?tab=1')).toBe('/vocab?tab=1')
+  })
+  it('rejects an absolute off-site URL', () => {
+    expect(safeRedirectPath('https://evil.com')).toBe('/plan')
+  })
+  it('rejects a protocol-relative URL', () => {
+    expect(safeRedirectPath('//evil.com')).toBe('/plan')
+    expect(safeRedirectPath('/\\evil.com')).toBe('/plan')
+  })
+  it('rejects a bare path with no leading slash', () => {
+    expect(safeRedirectPath('evil.com')).toBe('/plan')
+    expect(safeRedirectPath('')).toBe('/plan')
+  })
+  it('uses the given fallback', () => {
+    expect(safeRedirectPath('https://evil.com', '/')).toBe('/')
+  })
+})
 
 describe('validateCredentials', () => {
   it('rejects an empty email', () => {

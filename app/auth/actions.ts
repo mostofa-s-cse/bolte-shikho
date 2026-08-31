@@ -1,8 +1,9 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
-import { validateCredentials } from '@/lib/validation'
+import { validateCredentials, safeRedirectPath } from '@/lib/validation'
 
 export async function signUp(formData: FormData) {
   const email = String(formData.get('email') ?? '')
@@ -20,6 +21,7 @@ export async function signUp(formData: FormData) {
   // them back to /login through the middleware with no explanation.
   if (!data.session) redirect('/signup/check-email')
 
+  revalidatePath('/', 'layout')
   redirect('/plan')
 }
 
@@ -35,11 +37,17 @@ export async function signIn(formData: FormData) {
   const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
   if (signInError) redirect(`/login?error=${encodeURIComponent(signInError.message)}`)
 
-  redirect(next)
+  const safeNext = safeRedirectPath(next)
+
+  // The header is rendered by an async Server Component in the root layout;
+  // without this the logged-in state can stay stale after the redirect.
+  revalidatePath('/', 'layout')
+  redirect(safeNext)
 }
 
 export async function signOut() {
   const supabase = await createServerSupabaseClient()
   await supabase.auth.signOut()
+  revalidatePath('/', 'layout')
   redirect('/')
 }
