@@ -59,6 +59,38 @@ describe('translateText', () => {
     expect(result).toEqual({ translatedText: 'হ্যালো' })
   })
 
+  it('skips a thinking-only part and takes the part carrying the translation', async () => {
+    vi.stubEnv('GEMINI_API_KEY', 'test-key')
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          candidates: [
+            {
+              content: {
+                parts: [{ thoughtSignature: 'abc' }, { text: 'হ্যালো' }],
+              },
+            },
+          ],
+        }),
+      })
+    )
+    const result = await translateText('hello', 'en', 'bn')
+    expect(result).toEqual({ translatedText: 'হ্যালো' })
+  })
+
+  it('asks Gemini for low thinking effort rather than full reasoning', async () => {
+    vi.stubEnv('GEMINI_API_KEY', 'test-key')
+    const fetchMock = vi.fn().mockResolvedValue(geminiResponse('ok'))
+    vi.stubGlobal('fetch', fetchMock)
+
+    await translateText('hello', 'en', 'bn')
+
+    const body = JSON.parse(fetchMock.mock.calls[0][1].body)
+    expect(body.generationConfig.thinkingConfig).toEqual({ thinkingLevel: 'low' })
+  })
+
   it('skips Gemini entirely when no key is configured', async () => {
     const fetchMock = vi.fn().mockResolvedValue(googleResponse('হ্যালো'))
     vi.stubGlobal('fetch', fetchMock)

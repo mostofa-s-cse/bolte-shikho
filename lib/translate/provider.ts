@@ -16,7 +16,9 @@
 // If both fail the caller gets a clear "busy, try again" error rather than a
 // wrong-but-confident-looking answer.
 const TIMEOUT_MS = 8000
-const GEMINI_MODEL = process.env.GEMINI_MODEL ?? 'gemini-2.5-flash'
+// gemini-2.5-flash is no longer available to new API keys — 3.6-flash is
+// what Google's own 404 response points new users to.
+const GEMINI_MODEL = process.env.GEMINI_MODEL ?? 'gemini-3.6-flash'
 
 export type TranslateResult = { translatedText: string } | { error: string; status: number }
 
@@ -58,8 +60,15 @@ async function translateWithGemini(text: string, from: string, to: string): Prom
         },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          // Low temperature: translation should be deterministic, not creative.
-          generationConfig: { temperature: 0.2 },
+          generationConfig: {
+            // Translation should be deterministic, not creative.
+            temperature: 0.2,
+            // Left on "low" rather than "minimal": measured against real
+            // sentences, minimal dropped case marking ("ঢাকা যাব" instead of
+            // "ঢাকায় যাব"). This is a language-learning app, so grammatical
+            // accuracy is worth the extra tokens.
+            thinkingConfig: { thinkingLevel: 'low' },
+          },
         }),
       }
     )
@@ -71,8 +80,15 @@ async function translateWithGemini(text: string, from: string, to: string): Prom
   if (!upstream.ok) return null
 
   const data = await upstream.json()
-  const translated = data?.candidates?.[0]?.content?.parts?.[0]?.text
-  return typeof translated === 'string' && translated.trim() ? translated.trim() : null
+  // A thinking model can return its reasoning as its own part, so take the
+  // first part that actually carries text rather than assuming parts[0].
+  const parts: unknown = data?.candidates?.[0]?.content?.parts
+  if (!Array.isArray(parts)) return null
+  const translated = parts
+    .map((part) => (part && typeof part === 'object' ? (part as { text?: unknown }).text : undefined))
+    .find((value): value is string => typeof value === 'string' && value.trim().length > 0)
+
+  return translated ? translated.trim() : null
 }
 
 async function translateWithGoogleUnofficial(text: string, from: string, to: string): Promise<string | null> {
