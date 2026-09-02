@@ -17,12 +17,12 @@ function makeRawRequest(body: string) {
 function mockTranslateSuccess(translatedText: string) {
   return vi.fn().mockResolvedValue({
     ok: true,
-    json: async () => [{ translations: [{ text: translatedText, to: 'bn' }] }],
+    json: async () => ({ data: { translations: [{ translatedText }] } }),
   })
 }
 
 beforeEach(() => {
-  vi.stubEnv('AZURE_TRANSLATOR_KEY', 'test-key')
+  vi.stubEnv('GOOGLE_TRANSLATE_API_KEY', 'test-key')
 })
 
 afterEach(() => {
@@ -74,14 +74,17 @@ describe('POST /api/translate', () => {
     const body = await response.json()
 
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(/from=en.*to=bn/),
-      expect.objectContaining({ signal: expect.any(AbortSignal) })
+      expect.stringContaining('key='),
+      expect.objectContaining({
+        signal: expect.any(AbortSignal),
+        body: JSON.stringify({ q: 'hello', source: 'en', target: 'bn', format: 'text' }),
+      })
     )
     expect(body).toEqual({ translatedText: 'হ্যালো' })
   })
 
   it('returns 500 when the provider is not configured with an API key', async () => {
-    vi.stubEnv('AZURE_TRANSLATOR_KEY', '')
+    vi.stubEnv('GOOGLE_TRANSLATE_API_KEY', '')
     const response = await POST(makeRequest({ text: 'hello', from: 'en', to: 'bn' }))
     expect(response.status).toBe(500)
   })
@@ -95,7 +98,7 @@ describe('POST /api/translate', () => {
   it('returns 502 when the provider returns no translation', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValue({ ok: true, json: async () => [{ translations: [] }] })
+      vi.fn().mockResolvedValue({ ok: true, json: async () => ({ data: { translations: [] } }) })
     )
     const response = await POST(makeRequest({ text: 'hello', from: 'en', to: 'bn' }))
     expect(response.status).toBe(502)

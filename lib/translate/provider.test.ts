@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { translateText } from './provider'
 
 beforeEach(() => {
-  vi.stubEnv('AZURE_TRANSLATOR_KEY', 'test-key')
+  vi.stubEnv('GOOGLE_TRANSLATE_API_KEY', 'test-key')
 })
 
 afterEach(() => {
@@ -17,7 +17,7 @@ describe('translateText', () => {
       'fetch',
       vi.fn().mockResolvedValue({
         ok: true,
-        json: async () => [{ translations: [{ text: 'হ্যালো', to: 'bn' }] }],
+        json: async () => ({ data: { translations: [{ translatedText: 'হ্যালো' }] } }),
       })
     )
     const result = await translateText('hello', 'en', 'bn')
@@ -25,29 +25,26 @@ describe('translateText', () => {
   })
 
   it('returns an error when the API key is not configured', async () => {
-    vi.stubEnv('AZURE_TRANSLATOR_KEY', '')
+    vi.stubEnv('GOOGLE_TRANSLATE_API_KEY', '')
     const result = await translateText('hello', 'en', 'bn')
     expect(result).toEqual({ error: 'translation service not configured', status: 500 })
   })
 
-  it('sends the subscription key and region headers', async () => {
-    vi.stubEnv('AZURE_TRANSLATOR_REGION', 'eastus')
+  it('sends the API key and request body correctly', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => [{ translations: [{ text: 'ok', to: 'bn' }] }],
+      json: async () => ({ data: { translations: [{ translatedText: 'ok' }] } }),
     })
     vi.stubGlobal('fetch', fetchMock)
 
     await translateText('hello', 'en', 'bn')
 
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(/from=en.*to=bn/),
+      expect.stringContaining('key=test-key'),
       expect.objectContaining({
         method: 'POST',
-        headers: expect.objectContaining({
-          'Ocp-Apim-Subscription-Key': 'test-key',
-          'Ocp-Apim-Subscription-Region': 'eastus',
-        }),
+        headers: expect.objectContaining({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({ q: 'hello', source: 'en', target: 'bn', format: 'text' }),
       })
     )
   })
@@ -63,7 +60,7 @@ describe('translateText', () => {
       'fetch',
       vi.fn().mockResolvedValue({
         ok: true,
-        json: async () => [{ translations: [] }],
+        json: async () => ({ data: { translations: [] } }),
       })
     )
     const result = await translateText('hello', 'en', 'bn')
