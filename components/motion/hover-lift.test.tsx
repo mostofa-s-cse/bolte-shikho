@@ -13,18 +13,20 @@ describe('HoverLift', () => {
   })
 
   it('renders children as a plain, unwrapped element when reduced motion is preferred', async () => {
+    vi.resetModules()
     vi.doMock('framer-motion', async () => {
       const actual = await vi.importActual<typeof import('framer-motion')>('framer-motion')
       return { ...actual, useReducedMotion: () => true }
     })
     const { HoverLift: ReducedHoverLift } = await import('./hover-lift')
 
-    render(
+    const { container } = render(
       <ReducedHoverLift>
         <button type="button">Go</button>
       </ReducedHoverLift>
     )
     expect(screen.getByRole('button', { name: 'Go' })).toBeInTheDocument()
+    expect(container.querySelector('.inline-block')).not.toBeInTheDocument()
 
     vi.doUnmock('framer-motion')
   })
