@@ -6,6 +6,7 @@ import { Menu, X } from 'lucide-react'
 import { navLinks } from '@/lib/nav'
 import { useTranslations } from '@/lib/i18n/locale-context'
 import { withLocale } from '@/lib/i18n/locale-routing'
+import { Button } from '@/components/ui/button'
 
 // SiteHeader is an async Server Component and cannot hold state, so the
 // mobile disclosure lives here as its own client island.
@@ -30,16 +31,13 @@ export function MobileNav() {
       {open && (
         <nav
           id="mobile-nav-panel"
-          className="absolute left-0 right-0 top-full flex flex-col gap-1 border-b border-border bg-surface px-6 py-3 text-sm font-medium text-ink-muted shadow-sm"
+          className="absolute left-0 right-0 top-full flex flex-col gap-1 border-b border-border bg-surface px-6 py-3 shadow-sm"
         >
           {links.map((link) => (
-            <Link
-              key={link.href}
-              href={withLocale(link.href, locale)}
-              onClick={() => setOpen(false)}
-              className="rounded-md px-2 py-2 hover:bg-surface-alt hover:text-ink"
-            >
-              {link.label}
+            <Link key={link.href} href={withLocale(link.href, locale)} onClick={() => setOpen(false)}>
+              <Button type="button" variant="ghost" size="sm" className="w-full justify-start">
+                {link.label}
+              </Button>
             </Link>
           ))}
         </nav>

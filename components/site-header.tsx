@@ -25,10 +25,12 @@ export async function SiteHeader() {
         <Link href={withLocale('/', locale)} className="font-display text-lg font-semibold">
           {t.header.brand}
         </Link>
-        <nav className="hidden flex-wrap gap-4 text-sm font-medium text-ink-muted md:flex">
+        <nav className="hidden flex-wrap gap-2 md:flex">
           {links.map((link) => (
-            <Link key={link.href} href={withLocale(link.href, locale)} className="hover:text-ink">
-              {link.label}
+            <Link key={link.href} href={withLocale(link.href, locale)}>
+              <Button type="button" variant="ghost" size="sm">
+                {link.label}
+              </Button>
             </Link>
           ))}
         </nav>
