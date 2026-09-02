@@ -18,9 +18,9 @@ export function NavLinks({ links, locale }: { links: { href: string; label: stri
         const active = rest === link.href || rest.startsWith(`${link.href}/`)
         return (
           <Link key={link.href} href={withLocale(link.href, locale)} className="relative">
-            {active && !shouldReduceMotion && (
+            {active && (
               <motion.span
-                layoutId="nav-active-pill"
+                layoutId={shouldReduceMotion ? undefined : 'nav-active-pill'}
                 className="absolute inset-0 rounded-full border border-accent"
                 transition={{ type: 'spring', stiffness: 380, damping: 30 }}
               />
@@ -29,10 +29,7 @@ export function NavLinks({ links, locale }: { links: { href: string; label: stri
               type="button"
               variant="ghost"
               size="sm"
-              className={cn(
-                'relative',
-                active ? 'border-transparent text-accent' : 'hover:text-ink hover:border-border'
-              )}
+              className={cn('relative', active && 'border-transparent text-accent')}
             >
               {link.label}
             </Button>

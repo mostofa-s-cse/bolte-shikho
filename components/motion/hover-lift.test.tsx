@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { HoverLift } from './hover-lift'
 
 describe('HoverLift', () => {
@@ -10,24 +10,5 @@ describe('HoverLift', () => {
       </HoverLift>
     )
     expect(screen.getByRole('button', { name: 'Go' })).toBeInTheDocument()
-  })
-
-  it('renders children as a plain, unwrapped element when reduced motion is preferred', async () => {
-    vi.resetModules()
-    vi.doMock('framer-motion', async () => {
-      const actual = await vi.importActual<typeof import('framer-motion')>('framer-motion')
-      return { ...actual, useReducedMotion: () => true }
-    })
-    const { HoverLift: ReducedHoverLift } = await import('./hover-lift')
-
-    const { container } = render(
-      <ReducedHoverLift>
-        <button type="button">Go</button>
-      </ReducedHoverLift>
-    )
-    expect(screen.getByRole('button', { name: 'Go' })).toBeInTheDocument()
-    expect(container.querySelector('.inline-block')).not.toBeInTheDocument()
-
-    vi.doUnmock('framer-motion')
   })
 })

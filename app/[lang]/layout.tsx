@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Fraunces, Work_Sans, Hind_Siliguri } from 'next/font/google'
 import '../globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
+import { MotionProvider } from '@/components/motion/motion-provider'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { LocaleProvider } from '@/lib/i18n/locale-context'
@@ -54,11 +55,13 @@ export default async function RootLayout({
       >
         <LocaleProvider dict={dict} locale={locale}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="flex min-h-screen flex-col">
-              <SiteHeader />
-              <div className="flex-1">{children}</div>
-              <SiteFooter />
-            </div>
+            <MotionProvider>
+              <div className="flex min-h-screen flex-col">
+                <SiteHeader />
+                <div className="flex-1">{children}</div>
+                <SiteFooter />
+              </div>
+            </MotionProvider>
           </ThemeProvider>
         </LocaleProvider>
       </body>

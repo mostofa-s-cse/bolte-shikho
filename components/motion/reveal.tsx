@@ -1,20 +1,15 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import type { ReactNode } from 'react'
 
-// Shared scroll-reveal used by the hero and feature grid: fades and
-// slides content up the first time it enters the viewport. Reduced-motion
-// users get the content immediately, with no animation at all — not just
-// a faster one — since `useReducedMotion` means "skip motion", not
-// "use less of it".
+// Shared scroll-reveal used by the feature grid: fades and slides content
+// up the first time it enters the viewport. Reduced-motion handling is
+// delegated to the app-wide `<MotionConfig reducedMotion="user">` (see
+// `components/motion/motion-provider.tsx`), which neutralizes the
+// transform/opacity animation for reduced-motion users without changing
+// what gets rendered — so server and client HTML always agree.
 export function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
-  const shouldReduceMotion = useReducedMotion()
-
-  if (shouldReduceMotion) {
-    return <div>{children}</div>
-  }
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
