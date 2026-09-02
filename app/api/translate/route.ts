@@ -3,8 +3,9 @@ import { translateText } from '@/lib/translate/provider'
 import { isRateLimited } from '@/lib/translate/rate-limit'
 
 const SUPPORTED_LANGS = new Set(['en', 'bn'])
-// MyMemory's practical limit is ~500 bytes of query text; 490 chars leaves a
-// buffer so a request never silently comes back truncated.
+// The provider is called via a GET request with the text in the query
+// string; this keeps well clear of URL-length limits and matches the
+// textarea's own maxLength in the UI.
 const MAX_TEXT_LENGTH = 490
 
 export async function POST(request: NextRequest) {
