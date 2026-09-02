@@ -127,5 +127,10 @@
   "meta": {
     "title": "Bolte Shikho",
     "description": "Spoken English learning platform for Bangla speakers"
+  },
+  "auth": {
+    "googleButton": "Continue with Google",
+    "orContinue": "or continue with email",
+    "error": "Couldn't sign in with Google. Try again."
   }
 }

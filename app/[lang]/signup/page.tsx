@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { GoogleSignInButton } from '@/components/auth/google-signin-button'
 import { getDictionary } from '@/lib/i18n/get-dictionary'
 import { withLocale } from '@/lib/i18n/locale-routing'
 import { lang } from 'next/root-params'
@@ -20,7 +21,13 @@ export default async function SignupPage({
       <Card>
         <h1 className="font-display text-2xl font-semibold">{t.signup.heading}</h1>
         {error && <p className="mt-3 rounded-lg bg-bad/10 p-3 text-sm text-bad">{error}</p>}
-        <form action={signUp} className="mt-6 flex flex-col gap-4">
+        <div className="mt-6">
+          <GoogleSignInButton />
+        </div>
+        <p className="my-4 text-center text-xs uppercase tracking-wide text-ink-muted">
+          {t.auth.orContinue}
+        </p>
+        <form action={signUp} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="name">{t.signup.name}</Label>
             <Input id="name" name="name" type="text" required />
