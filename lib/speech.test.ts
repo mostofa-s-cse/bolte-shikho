@@ -6,6 +6,11 @@ interface StubUtterance {
   text: string
   lang: string
   rate: number
+  voice: SpeechSynthesisVoice | null
+}
+
+function stubVoice(name: string, lang: string): SpeechSynthesisVoice {
+  return { name, lang } as SpeechSynthesisVoice
 }
 
 // The stub installed in beforeEach; typed here so the assertions can read
@@ -27,15 +32,16 @@ describe('normalizeSpeech', () => {
 
 describe('speak', () => {
   beforeEach(() => {
-    vi.stubGlobal('speechSynthesis', { cancel: vi.fn(), speak: vi.fn() })
+    vi.stubGlobal('speechSynthesis', { cancel: vi.fn(), speak: vi.fn(), getVoices: vi.fn(() => []) })
     vi.stubGlobal(
       'SpeechSynthesisUtterance',
       // Must be a real `function`, not an arrow function — arrow functions
       // are never constructible, and `speak()` calls this with `new`.
-      vi.fn(function (this: { text: string; lang: string; rate: number }, text: string) {
+      vi.fn(function (this: StubUtterance, text: string) {
         this.text = text
         this.lang = ''
         this.rate = 1
+        this.voice = null
       })
     )
   })
@@ -59,6 +65,30 @@ describe('speak', () => {
   it('does nothing when speechSynthesis is unavailable', () => {
     vi.stubGlobal('speechSynthesis', undefined)
     expect(() => speak('hello')).not.toThrow()
+  })
+
+  it('picks a clearer-sounding voice over a plain one when both match the language', () => {
+    const plain = stubVoice('Microsoft David', 'en-US')
+    const clearer = stubVoice('Google US English', 'en-US')
+    window.speechSynthesis.getVoices = vi.fn(() => [plain, clearer])
+
+    speak('hello')
+
+    expect(lastUtterance().voice).toBe(clearer)
+  })
+
+  it('falls back to any matching-language voice when no clearer one is available', () => {
+    const onlyVoice = stubVoice('Microsoft David', 'en-US')
+    window.speechSynthesis.getVoices = vi.fn(() => [onlyVoice])
+
+    speak('hello')
+
+    expect(lastUtterance().voice).toBe(onlyVoice)
+  })
+
+  it('leaves the browser default voice when no voices are available yet', () => {
+    speak('hello')
+    expect(lastUtterance().voice).toBeNull()
   })
 })
 

@@ -6,6 +6,24 @@ export function normalizeSpeech(text: string): string {
     .trim()
 }
 
+// The browser lists several voices per language, and the one it defaults
+// to is often a low-quality/robotic one. Prefer a voice whose name signals
+// higher quality (Google's and the OS's "Natural"/"Enhanced"/"Premium"
+// voices are markedly clearer than the fallback ones), falling back to any
+// voice that matches the language, then to the browser's own default.
+function pickVoice(lang: string): SpeechSynthesisVoice | null {
+  if (typeof window === 'undefined' || !window.speechSynthesis?.getVoices) return null
+  const voices = window.speechSynthesis.getVoices()
+  if (!voices.length) return null
+
+  const langPrefix = lang.split('-')[0]
+  const matching = voices.filter((v) => v.lang === lang || v.lang.startsWith(langPrefix))
+  if (!matching.length) return null
+
+  const clearerNamePattern = /google|natural|enhanced|premium|neural/i
+  return matching.find((v) => clearerNamePattern.test(v.name)) ?? matching[0]
+}
+
 // `lang` picks the voice. It defaults to English because most callers read
 // back English vocabulary; the translator passes 'bn-BD' when the result it
 // is speaking is Bangla.
@@ -23,6 +41,8 @@ export function speak(text: string, rate = 1, lang = 'en-US'): void {
   const utterance = new SpeechSynthesisUtterance(clean)
   utterance.lang = lang
   utterance.rate = rate
+  const voice = pickVoice(lang)
+  if (voice) utterance.voice = voice
   window.speechSynthesis.speak(utterance)
 }
 
