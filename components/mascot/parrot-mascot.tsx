@@ -14,13 +14,13 @@ export function ParrotMascot({ pose, className }: { pose: MascotPose; className?
 
   const bodyAnimation = shouldReduceMotion
     ? undefined
-    : { y: [0, -4, 0], transition: { duration: 2.2, repeat: Infinity, ease: 'easeInOut' } }
+    : { y: [0, -4, 0], transition: { duration: 2.2, repeat: Infinity, ease: 'easeInOut' as const } }
 
   const eyeAnimation = shouldReduceMotion
     ? undefined
     : {
         scaleY: [1, 1, 0.1, 1],
-        transition: { duration: 3.6, repeat: Infinity, repeatDelay: 1.4, ease: 'easeInOut' },
+        transition: { duration: 3.6, repeat: Infinity, repeatDelay: 1.4, ease: 'easeInOut' as const },
       }
 
   return (
