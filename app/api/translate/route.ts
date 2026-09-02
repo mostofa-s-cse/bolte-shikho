@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { translateText } from '@/lib/translate/provider'
+import { isRateLimited } from '@/lib/translate/rate-limit'
 
 const SUPPORTED_LANGS = new Set(['en', 'bn'])
 // MyMemory's practical limit is ~500 bytes of query text; 490 chars leaves a
@@ -6,6 +8,11 @@ const SUPPORTED_LANGS = new Set(['en', 'bn'])
 const MAX_TEXT_LENGTH = 490
 
 export async function POST(request: NextRequest) {
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+  if (isRateLimited(ip)) {
+    return NextResponse.json({ error: 'too many requests' }, { status: 429 })
+  }
+
   let body: unknown
   try {
     body = await request.json()
@@ -31,27 +38,10 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${encodeURIComponent(`${from}|${to}`)}`
-  const upstream = await fetch(url)
-  if (!upstream.ok) {
-    return NextResponse.json({ error: 'translation service error' }, { status: 502 })
+  const result = await translateText(text, from, to)
+  if ('error' in result) {
+    return NextResponse.json({ error: result.error }, { status: result.status })
   }
 
-  const data = await upstream.json()
-
-  // MyMemory answers HTTP 200 even for quota and error conditions, signalling
-  // the real outcome in the body's own `responseStatus` field and stuffing an
-  // error message into `translatedText`. Trust the body, not the status line.
-  // It sends the code as a number or a string depending on the endpoint, so
-  // coerce before comparing (Number(undefined) is NaN, which fails the check).
-  if (Number(data?.responseStatus) !== 200) {
-    return NextResponse.json({ error: 'translation service error' }, { status: 502 })
-  }
-
-  const translated = data?.responseData?.translatedText
-  if (!translated) {
-    return NextResponse.json({ error: 'no translation returned' }, { status: 502 })
-  }
-
-  return NextResponse.json({ translatedText: translated })
+  return NextResponse.json({ translatedText: result.translatedText })
 }

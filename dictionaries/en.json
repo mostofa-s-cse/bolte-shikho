@@ -92,7 +92,13 @@
     "translateButton": "Translate",
     "listen": "Listen",
     "genericError": "Translation failed",
-    "error": "Couldn't translate. Try again."
+    "error": "Couldn't translate. Try again.",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "clear": "Clear",
+    "charCount": "{{count}} / {{max}}",
+    "sourceLang": "From",
+    "targetLang": "To"
   },
   "login": {
     "heading": "Login",

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { POST } from './route'
 import { NextRequest } from 'next/server'
+import { resetRateLimit } from '@/lib/translate/rate-limit'
 
 function makeRequest(body: unknown) {
   return new NextRequest('http://localhost/api/translate', {
@@ -15,6 +16,7 @@ function makeRawRequest(body: string) {
 
 afterEach(() => {
   vi.unstubAllGlobals()
+  resetRateLimit()
 })
 
 describe('POST /api/translate', () => {
@@ -68,7 +70,10 @@ describe('POST /api/translate', () => {
     const response = await POST(makeRequest({ text: 'hello', from: 'en', to: 'bn' }))
     const body = await response.json()
 
-    expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining('langpair=en%7Cbn'))
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('langpair=en%7Cbn'),
+      expect.objectContaining({ signal: expect.any(AbortSignal) })
+    )
     expect(body).toEqual({ translatedText: 'হ্যালো' })
   })
 
@@ -109,6 +114,21 @@ describe('POST /api/translate', () => {
     const response = await POST(makeRequest({ text: 'hello', from: 'en', to: 'bn' }))
     expect(response.status).toBe(502)
     expect(await response.json()).toEqual({ error: 'translation service error' })
+  })
+
+  it('returns 429 when the same client exceeds the rate limit', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ responseStatus: 200, responseData: { translatedText: 'ok' } }),
+      })
+    )
+    for (let i = 0; i < 20; i++) {
+      await POST(makeRequest({ text: 'hello', from: 'en', to: 'bn' }))
+    }
+    const response = await POST(makeRequest({ text: 'hello', from: 'en', to: 'bn' }))
+    expect(response.status).toBe(429)
   })
 
   it('returns 502 when the body carries no responseStatus at all', async () => {
