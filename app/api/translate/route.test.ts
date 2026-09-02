@@ -23,6 +23,7 @@ function mockTranslateSuccess(translatedText: string) {
 
 afterEach(() => {
   vi.unstubAllGlobals()
+  vi.unstubAllEnvs()
   resetRateLimit()
 })
 
@@ -61,7 +62,7 @@ describe('POST /api/translate', () => {
     expect(await response.json()).toEqual({ error: 'invalid request body' })
   })
 
-  it('calls the provider with the correct source/target languages and returns its translation', async () => {
+  it('calls the primary provider with the correct source/target languages and returns its translation', async () => {
     const fetchMock = mockTranslateSuccess('হ্যালো')
     vi.stubGlobal('fetch', fetchMock)
 
@@ -75,20 +76,24 @@ describe('POST /api/translate', () => {
     expect(body).toEqual({ translatedText: 'হ্যালো' })
   })
 
-  it('returns 502 when the upstream call fails', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }))
+  it('falls back to Hugging Face when the primary provider fails', async () => {
+    vi.stubEnv('HUGGINGFACE_API_TOKEN', 'test-token')
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: false })
+      .mockResolvedValueOnce({ ok: true, json: async () => [{ translation_text: 'হ্যালো' }] })
+    vi.stubGlobal('fetch', fetchMock)
+
     const response = await POST(makeRequest({ text: 'hello', from: 'en', to: 'bn' }))
-    expect(response.status).toBe(502)
+    expect(response.status).toBe(200)
+    expect(await response.json()).toEqual({ translatedText: 'হ্যালো' })
   })
 
-  it('returns 502 when the provider returns no translatable segments', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockResolvedValue({ ok: true, json: async () => [null, null, 'en'] })
-    )
+  it('returns 503 (busy) when both providers fail, never a wrong-but-confident answer', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }))
     const response = await POST(makeRequest({ text: 'hello', from: 'en', to: 'bn' }))
-    expect(response.status).toBe(502)
-    expect(await response.json()).toEqual({ error: 'no translation returned' })
+    expect(response.status).toBe(503)
+    expect(await response.json()).toEqual({ error: 'translation service busy, try again later' })
   })
 
   it('returns 429 when the same client exceeds the rate limit', async () => {
