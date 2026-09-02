@@ -1,13 +1,8 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { translateText } from './provider'
-
-beforeEach(() => {
-  vi.stubEnv('GOOGLE_TRANSLATE_API_KEY', 'test-key')
-})
 
 afterEach(() => {
   vi.unstubAllGlobals()
-  vi.unstubAllEnvs()
   vi.useRealTimers()
 })
 
@@ -17,36 +12,30 @@ describe('translateText', () => {
       'fetch',
       vi.fn().mockResolvedValue({
         ok: true,
-        json: async () => ({ data: { translations: [{ translatedText: 'হ্যালো' }] } }),
+        json: async () => [[['হ্যালো', 'hello', null, null, 3]], null, 'en'],
       })
     )
     const result = await translateText('hello', 'en', 'bn')
     expect(result).toEqual({ translatedText: 'হ্যালো' })
   })
 
-  it('returns an error when the API key is not configured', async () => {
-    vi.stubEnv('GOOGLE_TRANSLATE_API_KEY', '')
-    const result = await translateText('hello', 'en', 'bn')
-    expect(result).toEqual({ error: 'translation service not configured', status: 500 })
-  })
-
-  it('sends the API key and request body correctly', async () => {
-    const fetchMock = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ data: { translations: [{ translatedText: 'ok' }] } }),
-    })
-    vi.stubGlobal('fetch', fetchMock)
-
-    await translateText('hello', 'en', 'bn')
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining('key=test-key'),
-      expect.objectContaining({
-        method: 'POST',
-        headers: expect.objectContaining({ 'Content-Type': 'application/json' }),
-        body: JSON.stringify({ q: 'hello', source: 'en', target: 'bn', format: 'text' }),
+  it('joins multiple sentence segments into one string', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => [
+          [
+            ['হ্যালো। ', 'Hello. ', null, null, 3],
+            ['তুমি কেমন আছো?', 'How are you?', null, null, 3],
+          ],
+          null,
+          'en',
+        ],
       })
     )
+    const result = await translateText('Hello. How are you?', 'en', 'bn')
+    expect(result).toEqual({ translatedText: 'হ্যালো। তুমি কেমন আছো?' })
   })
 
   it('returns a 502 error when the upstream call fails', async () => {
@@ -55,12 +44,12 @@ describe('translateText', () => {
     expect(result).toEqual({ error: 'translation service error', status: 502 })
   })
 
-  it('returns a 502 error when the response has no translation', async () => {
+  it('returns a 502 error when the upstream returns no segments', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
         ok: true,
-        json: async () => ({ data: { translations: [] } }),
+        json: async () => [null, null, 'en'],
       })
     )
     const result = await translateText('hello', 'en', 'bn')

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { POST } from './route'
 import { NextRequest } from 'next/server'
 import { resetRateLimit } from '@/lib/translate/rate-limit'
@@ -17,17 +17,12 @@ function makeRawRequest(body: string) {
 function mockTranslateSuccess(translatedText: string) {
   return vi.fn().mockResolvedValue({
     ok: true,
-    json: async () => ({ data: { translations: [{ translatedText }] } }),
+    json: async () => [[[translatedText, 'original', null, null, 3]], null, 'en'],
   })
 }
 
-beforeEach(() => {
-  vi.stubEnv('GOOGLE_TRANSLATE_API_KEY', 'test-key')
-})
-
 afterEach(() => {
   vi.unstubAllGlobals()
-  vi.unstubAllEnvs()
   resetRateLimit()
 })
 
@@ -74,19 +69,10 @@ describe('POST /api/translate', () => {
     const body = await response.json()
 
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining('key='),
-      expect.objectContaining({
-        signal: expect.any(AbortSignal),
-        body: JSON.stringify({ q: 'hello', source: 'en', target: 'bn', format: 'text' }),
-      })
+      expect.stringMatching(/sl=en.*tl=bn/),
+      expect.objectContaining({ signal: expect.any(AbortSignal) })
     )
     expect(body).toEqual({ translatedText: 'হ্যালো' })
-  })
-
-  it('returns 500 when the provider is not configured with an API key', async () => {
-    vi.stubEnv('GOOGLE_TRANSLATE_API_KEY', '')
-    const response = await POST(makeRequest({ text: 'hello', from: 'en', to: 'bn' }))
-    expect(response.status).toBe(500)
   })
 
   it('returns 502 when the upstream call fails', async () => {
@@ -95,10 +81,10 @@ describe('POST /api/translate', () => {
     expect(response.status).toBe(502)
   })
 
-  it('returns 502 when the provider returns no translation', async () => {
+  it('returns 502 when the provider returns no translatable segments', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValue({ ok: true, json: async () => ({ data: { translations: [] } }) })
+      vi.fn().mockResolvedValue({ ok: true, json: async () => [null, null, 'en'] })
     )
     const response = await POST(makeRequest({ text: 'hello', from: 'en', to: 'bn' }))
     expect(response.status).toBe(502)
