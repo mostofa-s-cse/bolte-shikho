@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PasswordInput } from '@/components/ui/password-input'
 import { GoogleSignInButton } from '@/components/auth/google-signin-button'
 import { getDictionary } from '@/lib/i18n/get-dictionary'
 import { withLocale } from '@/lib/i18n/locale-routing'
@@ -38,7 +39,7 @@ export default async function SignupPage({
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="password">{t.signup.password}</Label>
-            <Input id="password" name="password" type="password" required minLength={6} />
+            <PasswordInput id="password" name="password" required minLength={6} />
           </div>
           <Button type="submit">{t.signup.button}</Button>
         </form>

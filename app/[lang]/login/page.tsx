@@ -1,9 +1,8 @@
 import { signIn } from '@/app/auth/actions'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { GoogleSignInButton } from '@/components/auth/google-signin-button'
+import { LoginCredentialsFields } from '@/components/auth/login-credentials-fields'
 import { getDictionary } from '@/lib/i18n/get-dictionary'
 import { withLocale } from '@/lib/i18n/locale-routing'
 import { lang } from 'next/root-params'
@@ -29,14 +28,7 @@ export default async function LoginPage({
         </p>
         <form action={signIn} className="flex flex-col gap-4">
           <input type="hidden" name="next" value={next ?? withLocale('/plan', locale)} />
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="email">{t.login.email}</Label>
-            <Input id="email" name="email" type="email" required />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="password">{t.login.password}</Label>
-            <Input id="password" name="password" type="password" required />
-          </div>
+          <LoginCredentialsFields />
           <Button type="submit">{t.login.button}</Button>
         </form>
         <p className="mt-4 text-sm text-ink-muted">

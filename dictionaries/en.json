@@ -100,7 +100,8 @@
     "password": "Password",
     "button": "Login",
     "noAccount": "No account? ",
-    "signupLink": "Sign up"
+    "signupLink": "Sign up",
+    "rememberMe": "Remember me"
   },
   "signup": {
     "heading": "Create Account",
@@ -131,6 +132,8 @@
   "auth": {
     "googleButton": "Continue with Google",
     "orContinue": "or continue with email",
-    "error": "Couldn't sign in with Google. Try again."
+    "error": "Couldn't sign in with Google. Try again.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   }
 }

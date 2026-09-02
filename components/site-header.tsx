@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { MobileNav } from '@/components/mobile-nav'
 import { LocaleToggle } from '@/components/locale-toggle'
+import { NavLinks } from '@/components/nav-links'
 import { navLinks } from '@/lib/nav'
 import { getDictionary } from '@/lib/i18n/get-dictionary'
 import { withLocale } from '@/lib/i18n/locale-routing'
@@ -26,13 +27,7 @@ export async function SiteHeader() {
           {t.header.brand}
         </Link>
         <nav className="hidden flex-wrap gap-2 md:flex">
-          {links.map((link) => (
-            <Link key={link.href} href={withLocale(link.href, locale)}>
-              <Button type="button" variant="ghost" size="sm">
-                {link.label}
-              </Button>
-            </Link>
-          ))}
+          <NavLinks links={links} locale={locale} />
         </nav>
         <div className="flex items-center gap-2">
           <LocaleToggle locale={locale} />

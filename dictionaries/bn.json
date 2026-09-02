@@ -100,7 +100,8 @@
     "password": "পাসওয়ার্ড",
     "button": "লগইন করো",
     "noAccount": "অ্যাকাউন্ট নেই? ",
-    "signupLink": "অ্যাকাউন্ট খোলো"
+    "signupLink": "অ্যাকাউন্ট খোলো",
+    "rememberMe": "আমাকে মনে রাখো"
   },
   "signup": {
     "heading": "অ্যাকাউন্ট খোলো",
@@ -131,6 +132,8 @@
   "auth": {
     "googleButton": "Google দিয়ে চালিয়ে যাও",
     "orContinue": "অথবা ইমেইল দিয়ে",
-    "error": "Google দিয়ে লগইন করা গেল না। আবার চেষ্টা করো।"
+    "error": "Google দিয়ে লগইন করা গেল না। আবার চেষ্টা করো।",
+    "showPassword": "পাসওয়ার্ড দেখাও",
+    "hidePassword": "পাসওয়ার্ড লুকাও"
   }
 }
