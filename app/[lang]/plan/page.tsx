@@ -1,5 +1,6 @@
 import { PLAN_TASKS } from '@/data/plan-tasks'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { prisma } from '@/lib/prisma'
 import {
   dateFromStartOffset,
   getCurrentPlanDay,
@@ -29,11 +30,7 @@ export default async function PlanPage() {
     )
   }
 
-  const { data: startRow } = await supabase
-    .from('plan_start')
-    .select('start_date')
-    .eq('user_id', user.id)
-    .maybeSingle()
+  const startRow = await prisma.plan_start.findUnique({ where: { user_id: user.id } })
 
   if (!startRow) {
     return (
@@ -46,24 +43,34 @@ export default async function PlanPage() {
     )
   }
 
-  const [{ data: progressRows }, { data: completionRows }] = await Promise.all([
-    supabase.from('plan_task_progress').select('plan_day, task_index, completed_at').eq('user_id', user.id),
-    supabase.from('plan_day_completion').select('plan_day, completed_date').eq('user_id', user.id),
+  const startDate = startRow.start_date.toISOString().slice(0, 10)
+
+  const [progressRows, completionRows] = await Promise.all([
+    prisma.plan_task_progress.findMany({
+      where: { user_id: user.id },
+      select: { plan_day: true, task_index: true, completed_at: true },
+    }),
+    prisma.plan_day_completion.findMany({
+      where: { user_id: user.id },
+      select: { plan_day: true, completed_date: true },
+    }),
   ])
 
   const checkedByDay: boolean[][] = PLAN_TASKS.map((tasks) => tasks.map(() => false))
-  for (const row of progressRows ?? []) {
+  for (const row of progressRows) {
     if (row.completed_at) checkedByDay[row.plan_day - 1][row.task_index] = true
   }
-  const completedDateByDay = new Map((completionRows ?? []).map((r) => [r.plan_day, r.completed_date]))
+  const completedDateByDay = new Map(
+    completionRows.map((r) => [r.plan_day, r.completed_date.toISOString().slice(0, 10)])
+  )
 
-  const currentDay = getCurrentPlanDay(startRow.start_date, PLAN_TASKS.length, today)
+  const currentDay = getCurrentPlanDay(startDate, PLAN_TASKS.length, today)
 
   const statuses = PLAN_TASKS.map((tasks, idx) => {
     const dayNumber = idx + 1
     const checkedCount = checkedByDay[idx].filter(Boolean).length
     return computeDayStatus({
-      startDate: startRow.start_date,
+      startDate,
       dayNumber,
       taskCount: tasks.length,
       checkedCount,
@@ -76,7 +83,7 @@ export default async function PlanPage() {
     PLAN_TASKS.map((tasks, idx) => ({
       taskCount: tasks.length,
       checkedCount: checkedByDay[idx].filter(Boolean).length,
-      scheduledDate: dateFromStartOffset(startRow.start_date, idx),
+      scheduledDate: dateFromStartOffset(startDate, idx),
       completedDate: completedDateByDay.get(idx + 1) ?? null,
     }))
   )

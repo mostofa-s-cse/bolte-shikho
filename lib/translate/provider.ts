@@ -16,9 +16,14 @@
 // If both fail the caller gets a clear "busy, try again" error rather than a
 // wrong-but-confident-looking answer.
 const TIMEOUT_MS = 8000
-// gemini-2.5-flash is no longer available to new API keys — 3.6-flash is
-// what Google's own 404 response points new users to.
-const GEMINI_MODEL = process.env.GEMINI_MODEL ?? 'gemini-3.6-flash'
+// Free-tier request quota is per model per day (quotaId
+// GenerateRequestsPerDayPerProjectPerModel-FreeTier) and it is small —
+// gemini-3.6-flash reports a limit of 20/day. The lite models carry a
+// separate, larger allowance and measured identically on Bengali idioms
+// here, so the default is the lite one; override with GEMINI_MODEL.
+// Whatever the model, the unofficial-endpoint fallback below covers every
+// request past the quota.
+const GEMINI_MODEL = process.env.GEMINI_MODEL ?? 'gemini-3.5-flash-lite'
 
 export type TranslateResult = { translatedText: string } | { error: string; status: number }
 

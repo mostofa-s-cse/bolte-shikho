@@ -1,6 +1,7 @@
 import { PROMPTS } from '@/data/prompts'
 import { DIALOGUES } from '@/data/dialogues'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { prisma } from '@/lib/prisma'
 import { computePracticeStreak, todayISO } from '@/lib/scoring'
 import { PromptCard } from '@/components/practice/prompt-card'
 import { PronunciationCheck } from '@/components/practice/pronunciation-check'
@@ -19,13 +20,13 @@ export default async function PracticePage() {
   let logDates: string[] = []
 
   if (user) {
-    const { data: logRows } = await supabase
-      .from('practice_log')
-      .select('log_date')
-      .eq('user_id', user.id)
-      .order('log_date', { ascending: false })
-      .limit(60)
-    logDates = (logRows ?? []).map((row) => row.log_date as string)
+    const logRows = await prisma.practice_log.findMany({
+      where: { user_id: user.id },
+      select: { log_date: true },
+      orderBy: { log_date: 'desc' },
+      take: 60,
+    })
+    logDates = logRows.map((row) => row.log_date.toISOString().slice(0, 10))
   }
 
   return (

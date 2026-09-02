@@ -2,7 +2,13 @@
 
 import { revalidatePath } from 'next/cache'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { prisma } from '@/lib/prisma'
 import { dateFromStartOffset, todayISO } from '@/lib/scoring'
+
+// Identity still comes from Supabase Auth. Data access is Prisma, which
+// connects to Postgres directly and does not go through PostgREST — so it
+// does not see the `auth.uid() = user_id` RLS policies in supabase/schema.sql.
+// Every query below filters by `user_id` explicitly to take over that job.
 
 export async function startPlan() {
   const supabase = await createServerSupabaseClient()
@@ -11,7 +17,11 @@ export async function startPlan() {
   } = await supabase.auth.getUser()
   if (!user) return
 
-  await supabase.from('plan_start').upsert({ user_id: user.id, start_date: todayISO() })
+  await prisma.plan_start.upsert({
+    where: { user_id: user.id },
+    create: { user_id: user.id, start_date: new Date(todayISO()) },
+    update: {},
+  })
   revalidatePath('/[lang]/plan', 'page')
 }
 
@@ -22,40 +32,38 @@ export async function toggleTask(planDay: number, taskIndex: number, completed: 
   } = await supabase.auth.getUser()
   if (!user) return
 
-  await supabase.from('plan_task_progress').upsert(
-    {
+  await prisma.plan_task_progress.upsert({
+    where: { user_id_plan_day_task_index: { user_id: user.id, plan_day: planDay, task_index: taskIndex } },
+    create: {
       user_id: user.id,
       plan_day: planDay,
       task_index: taskIndex,
-      completed_at: completed ? new Date().toISOString() : null,
+      completed_at: completed ? new Date() : null,
     },
-    { onConflict: 'user_id,plan_day,task_index' }
-  )
+    update: { completed_at: completed ? new Date() : null },
+  })
 
-  const { count } = await supabase
-    .from('plan_task_progress')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id)
-    .eq('plan_day', planDay)
-    .not('completed_at', 'is', null)
+  const doneCount = await prisma.plan_task_progress.count({
+    where: { user_id: user.id, plan_day: planDay, completed_at: { not: null } },
+  })
 
-  if ((count ?? 0) === taskCount) {
-    const { data: startRow } = await supabase
-      .from('plan_start')
-      .select('start_date')
-      .eq('user_id', user.id)
-      .single()
+  if (doneCount === taskCount) {
+    const startRow = await prisma.plan_start.findUnique({ where: { user_id: user.id } })
 
     if (startRow) {
-      const scheduledDate = dateFromStartOffset(startRow.start_date, planDay - 1)
+      const scheduledDate = dateFromStartOffset(startRow.start_date.toISOString().slice(0, 10), planDay - 1)
       const today = todayISO()
 
-      await supabase
-        .from('plan_day_completion')
-        .upsert(
-          { user_id: user.id, plan_day: planDay, scheduled_date: scheduledDate, completed_date: today },
-          { onConflict: 'user_id,plan_day', ignoreDuplicates: true }
-        )
+      await prisma.plan_day_completion.upsert({
+        where: { user_id_plan_day: { user_id: user.id, plan_day: planDay } },
+        create: {
+          user_id: user.id,
+          plan_day: planDay,
+          scheduled_date: new Date(scheduledDate),
+          completed_date: new Date(today),
+        },
+        update: {},
+      })
     }
   }
 

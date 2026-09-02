@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { prisma } from '@/lib/prisma'
 import { todayISO } from '@/lib/scoring'
 
 export async function logPracticeToday() {
@@ -11,7 +12,11 @@ export async function logPracticeToday() {
   } = await supabase.auth.getUser()
   if (!user) return { loggedIn: false as const }
 
-  await supabase.from('practice_log').upsert({ user_id: user.id, log_date: todayISO() })
+  await prisma.practice_log.upsert({
+    where: { user_id_log_date: { user_id: user.id, log_date: new Date(todayISO()) } },
+    create: { user_id: user.id, log_date: new Date(todayISO()) },
+    update: {},
+  })
   revalidatePath('/[lang]/practice', 'page')
   return { loggedIn: true as const }
 }
