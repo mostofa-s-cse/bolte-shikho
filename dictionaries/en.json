@@ -20,7 +20,7 @@
     "cta": "Start Today",
     "features": {
       "vocab": { "title": "Vocab", "body": "250+ daily-use words, with audio pronunciation, quiz mode." },
-      "grammar": { "title": "Grammar & Tense", "body": "English grammar in 15 steps — from tenses to comparatives." },
+      "grammar": { "title": "Grammar & Tense", "body": "English grammar in 20 steps — from tenses to comparatives." },
       "practice": { "title": "Practice", "body": "Check pronunciation with your mic, conversation dialogues, a daily topic." },
       "plan": { "title": "30-Day Plan", "body": "Daily targets, a scoring system, on-time/late calendar tracking." },
       "translate": { "title": "Translator", "body": "English ↔ Bangla, speak into the mic, listen back." }

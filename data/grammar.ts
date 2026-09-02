@@ -314,4 +314,93 @@ export const GRAMMAR_STEPS: GrammarStep[] = [
     ],
     note: 'was: I/He/She/It — were: You/We/They',
   },
+  {
+    number: '১৬',
+    title: 'Future Continuous',
+    intro: 'Bhobisshote kono nirdishto somoy-e cholte thakbe emon kaj bolar jonno',
+    blocks: [
+      {
+        structure: 'Subject + will be + verb+ing',
+        examples: [
+          { en: 'I will be sleeping at 10 PM.', pron: 'আই উইল বি স্লিপিং অ্যাট টেন পিএম', mean: 'রাত ১০টায় আমি ঘুমাচ্ছি থাকবো।' },
+          { en: 'They will be traveling tomorrow.', pron: 'দে উইল বি ট্রাভেলিং টুমরো', mean: 'তারা আগামীকাল ভ্রমণ করতে থাকবে।' },
+        ],
+      },
+    ],
+    note: 'Past Continuous "cholchilo", Future Continuous "cholte thakbe" — dujontai verb+ing, shudhu was/were vs. will be alada.',
+  },
+  {
+    number: '১৭',
+    title: 'Present Perfect',
+    intro: 'Kaj ses hoye geche, kintu ekhono tar result/proman ache — "koto age" bola hoy na',
+    blocks: [
+      {
+        structure: 'Subject + have/has + verb3 (past participle)',
+        examples: [
+          { en: 'I have finished my homework.', pron: 'আই হ্যাভ ফিনিশড মাই হোমওয়ার্ক', mean: 'আমি আমার হোমওয়ার্ক শেষ করেছি। (ekhon shesh — result ache)' },
+          { en: 'She has visited Dhaka.', pron: 'শি হ্যাজ ভিজিটেড ঢাকা', mean: 'সে ঢাকা ভ্রমণ করেছে। (kokhon ta bola hoy nai, ekhon-o oi obhiggota tar ache)' },
+        ],
+      },
+    ],
+    note: '"I ate rice" (Past Simple) = kokhon khelam ta gurutto — "I have eaten rice" (Present Perfect) = ekhon r khide nai, result ta gurutto',
+  },
+  {
+    number: '১৮',
+    title: 'Past Perfect',
+    intro: 'Otite duita kajer moddhe je ta age ses hoyechilo, seta bolar jonno',
+    blocks: [
+      {
+        structure: 'Subject + had + verb3 (past participle)',
+        examples: [
+          { en: 'I had left before he arrived.', pron: 'আই হ্যাড লেফট বিফোর হি অ্যারাইভড', mean: 'সে আসার আগেই আমি চলে গিয়েছিলাম। (leaving age ses hoyechilo, arrive porer kaj)' },
+          { en: 'She had already eaten when I called.', pron: 'শি হ্যাড অলরেডি ইটেন হোয়েন আই কল্ড', mean: 'আমি কল করার আগেই সে খেয়ে ফেলেছিল।' },
+        ],
+      },
+    ],
+    note: 'Duita otit-kaler kaj thakle, "age" ses hওয়া kaj-ta Past Perfect (had + verb3), "pore" hওয়া kaj-ta shadha Past Simple.',
+  },
+  {
+    number: '১৯',
+    title: 'Future Perfect',
+    intro: 'Bhobisshote kono nirdishto somoyer age ekta kaj ses hoye jabe, seta bolar jonno',
+    blocks: [
+      {
+        structure: 'Subject + will have + verb3 (past participle)',
+        examples: [
+          { en: 'I will have finished by 5 PM.', pron: 'আই উইল হ্যাভ ফিনিশড বাই ফাইভ পিএম', mean: 'বিকেল ৫টার মধ্যে আমি শেষ করে ফেলবো।' },
+          { en: 'They will have left before you arrive.', pron: 'দে উইল হ্যাভ লেফট বিফোর ইউ অ্যারাইভ', mean: 'তুমি আসার আগেই তারা চলে যাবে।' },
+        ],
+      },
+    ],
+    note: 'shobcheye kom use hoy — "somoyer age ses hobe" emon kotha bolte lagle-i shudhu eta lage.',
+  },
+  {
+    number: '২০',
+    title: 'Perfect Continuous (Present / Past / Future)',
+    intro: 'Ekta kaj shomoy dhore cholche/cholchilo/cholbe, ar sathe duration ta-o bola hoy — 3 ta somoy-e-i hoy, kintu daily kothay shobcheye kom lage tai ekshathe',
+    blocks: [
+      {
+        tag: 'Present Perfect Continuous — ekhono cholche, koto shomoy dhore cholche',
+        structure: 'Subject + have/has been + verb+ing',
+        examples: [
+          { en: 'I have been working here for 2 years.', pron: 'আই হ্যাভ বিন ওয়ার্কিং হেয়ার ফর টু ইয়ার্স', mean: 'আমি এখানে ২ বছর ধরে কাজ করে আসছি। (shuru hoyechilo otite, ekhono cholche)' },
+        ],
+      },
+      {
+        tag: 'Past Perfect Continuous — otite ekta somoy porjonto shomoy dhore cholchilo',
+        structure: 'Subject + had been + verb+ing',
+        examples: [
+          { en: 'I had been waiting for an hour when he came.', pron: 'আই হ্যাড বিন ওয়েটিং ফর অ্যান আওয়ার হোয়েন হি কেইম', mean: 'সে আসার আগে আমি ১ ঘণ্টা ধরে অপেক্ষা করছিলাম।' },
+        ],
+      },
+      {
+        tag: 'Future Perfect Continuous — bhobisshote ekta somoy porjonto shomoy dhore cholte thakbe',
+        structure: 'Subject + will have been + verb+ing',
+        examples: [
+          { en: 'I will have been working here for 5 years by next month.', pron: 'আই উইল হ্যাভ বিন ওয়ার্কিং হেয়ার ফর ফাইভ ইয়ার্স বাই নেক্সট মান্থ', mean: 'আগামী মাসে আমার এখানে কাজ করা ৫ বছর পূর্ণ হয়ে যাবে।' },
+        ],
+      },
+    ],
+    note: 'Eigulo shobar sheshe shekho — daily kothabartar 80%+ Simple ar Continuous tense diyei chole. Perfect Continuous lage shudhu "koto shomoy dhore" seta gurutto hole.',
+  },
 ]

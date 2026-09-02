@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest'
 import { GRAMMAR_STEPS } from './grammar'
 
 describe('GRAMMAR_STEPS', () => {
-  it('has 15 steps', () => {
-    expect(GRAMMAR_STEPS.length).toBe(15)
+  it('has 20 steps', () => {
+    expect(GRAMMAR_STEPS.length).toBe(20)
   })
 
   it('every step has a title and either at least one example or a table', () => {
