@@ -44,8 +44,13 @@ export function TranslatorForm() {
   function swap() {
     setFrom(to)
     setTo(from)
-    setText(result)
-    setResult(text)
+    // Only exchange the two boxes when there's actually a translation to move
+    // back into the input. Doing it unconditionally wiped whatever the user
+    // had just typed whenever they set the direction before translating.
+    if (result) {
+      setText(result)
+      setResult(text)
+    }
   }
 
   function handleFromChange(value: Lang) {
