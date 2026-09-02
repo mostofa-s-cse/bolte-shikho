@@ -76,6 +76,7 @@
     "startLabel": "Get Started",
     "startBody": "Clicking this button starts Day 1 from today's date ({{today}}).",
     "startButton": "Start the Plan from Today",
+    "startedOn": "Started on {{date}}",
     "score": "Score",
     "dayOfTotal": "Day / Total",
     "onTime": "Done on time"

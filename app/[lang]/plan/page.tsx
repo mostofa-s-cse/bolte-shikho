@@ -97,6 +97,7 @@ export default async function PlanPage() {
         score={score}
         doneOnTime={doneOnTime}
         checkedByDay={checkedByDay}
+        startDate={startDate}
       />
     </main>
   )
