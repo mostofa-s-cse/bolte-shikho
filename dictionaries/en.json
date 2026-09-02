@@ -135,6 +135,10 @@
     "title": "Bolte Shikho",
     "description": "Spoken English learning platform for Bangla speakers"
   },
+  "footer": {
+    "supportLabel": "Need help?",
+    "rights": "All rights reserved."
+  },
   "auth": {
     "googleButton": "Continue with Google",
     "orContinue": "or continue with email",
