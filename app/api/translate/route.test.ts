@@ -76,20 +76,7 @@ describe('POST /api/translate', () => {
     expect(body).toEqual({ translatedText: 'হ্যালো' })
   })
 
-  it('falls back to Hugging Face when the primary provider fails', async () => {
-    vi.stubEnv('HUGGINGFACE_API_TOKEN', 'test-token')
-    const fetchMock = vi
-      .fn()
-      .mockResolvedValueOnce({ ok: false })
-      .mockResolvedValueOnce({ ok: true, json: async () => [{ translation_text: 'হ্যালো' }] })
-    vi.stubGlobal('fetch', fetchMock)
-
-    const response = await POST(makeRequest({ text: 'hello', from: 'en', to: 'bn' }))
-    expect(response.status).toBe(200)
-    expect(await response.json()).toEqual({ translatedText: 'হ্যালো' })
-  })
-
-  it('returns 503 (busy) when both providers fail, never a wrong-but-confident answer', async () => {
+  it('returns 503 (busy) when the provider fails, never a wrong-but-confident answer', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }))
     const response = await POST(makeRequest({ text: 'hello', from: 'en', to: 'bn' }))
     expect(response.status).toBe(503)
