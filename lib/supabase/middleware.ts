@@ -5,9 +5,21 @@ import { stripLocale, withLocale } from '@/lib/i18n/locale-routing'
 export async function updateSession(request: NextRequest, makeResponse: () => NextResponse) {
   let response = makeResponse()
 
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  // Without Supabase configured there's no session to refresh and nobody can
+  // be signed in anyway, so serve the request anonymously. Throwing here
+  // would 500 every single page — one missing env var shouldn't take the
+  // whole site down. Protected pages stay safe: `/plan` independently checks
+  // `getUser()` and renders its guest state.
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return response
+  }
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         getAll() {
